@@ -7,7 +7,7 @@ main: addi $2, $0, 5
       syscall		#le o segundo numero
 mult: mul $4, $2, $8	#multiplica os 2 numeros lidos
       addi $2, $0, 1
-      syscall		#imprime o resultado da multiplicação
+      syscall		#imprime o resultado da multiplicaÃ§Ã£o
 fim:  addi $2, $0, 10
       syscall		#fim do programa
       
