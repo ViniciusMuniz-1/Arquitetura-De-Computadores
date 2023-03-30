@@ -11,7 +11,7 @@ soma: add $9, $8, $2	#soma entre as duas notas
 
 divisao: div $9, $10
 
-imprimir: mflo $4	#move o resultado da divis„o para o reg $4
+imprimir: mflo $4	#move o resultado da divis√£o para o reg $4
           addi $2, $0 1 
           syscall       #imprime a media
           
