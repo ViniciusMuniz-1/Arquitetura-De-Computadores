@@ -11,11 +11,11 @@ multpesos: addi $10, $0, 2	#adiciona peso 2 para o reg $10
 	   mul $12, $8, $10	#multiplica primeira nota por 2
 	   mul $13, $2, $11	#multiplica segunda nota por 3
 	   add $14, $12, $13	#soma as notas multiplicadas pelos pesos
-      	   addi $15, $0, 5	#adiciona valor para a divis„o
+      	   addi $15, $0, 5	#adiciona valor para a divis√£o
 
 divisao: div $14, $15
 
-imprimir: mflo $4	#move o resultado da divis„o para o reg $4
+imprimir: mflo $4	#move o resultado da divis√£o para o reg $4
           addi $2, $0 1 
           syscall       #imprime a media
           
