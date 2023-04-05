@@ -17,7 +17,7 @@ imprime: mflo $4	#move a parte inteira para o 4
 	 
 	 addi $4, $0, 44
 	 addi $2, $0, 11
-	 syscall	#imprime a vírgula
+	 syscall	#imprime a vÃ­rgula
 	 
 	 mfhi $11	#move para o $11 o resto
 	 addi $12, $0, 10 #adiciona 10 ao reg $12
