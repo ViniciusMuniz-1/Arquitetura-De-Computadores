@@ -8,7 +8,7 @@ main:  addi $2, $0, 5
        add $9, $0, $2	#move o num2 para o reg 9
        
        sub $10, $9, $8	
-       #subtraÁ„o entre os 2 num, se for positivo num 2 È maior que num 1, caso n„o, num 1 È maior
+       #subtra√ß√£o entre os 2 num, se for positivo num 2 √© maior que num 1, caso n√£o, num 1 √© maior
        add $11, $10, $0
        not $11, $11
        
