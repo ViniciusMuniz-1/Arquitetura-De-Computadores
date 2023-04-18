@@ -26,7 +26,7 @@ main:	addi $2, $0, 5
 	
 	mflo $14
 	addi $16, $0, 60
-	slt $17, $16, $14	#se 60 < media, retorna 1, se nÃ£o 0
+	slt $17, $16, $14	#se 60 < media, retorna 1, se não 0
 	addi $18, $0, 1
 	
 	beq $17, $18, aprovado
@@ -37,7 +37,7 @@ aprovado: add $4, $0, $14
 	  syscall
 	  addi $4, $0, 44
 	  addi $2, $0, 11
-	  syscall	#imprime a vÃ­rgula
+	  syscall	#imprime a vírgula
 	 
 	  mfhi $11	#move para o $11 o resto
 	  addi $12, $0, 10 #adiciona 10 ao reg $12
@@ -60,7 +60,7 @@ reprovado:add $4, $0, $14
 	  syscall
 	  addi $4, $0, 44
 	  addi $2, $0, 11
-	  syscall	#imprime a vÃ­rgula
+	  syscall	#imprime a vírgula
 	 
 	  mfhi $11	#move para o $11 o resto
 	  addi $12, $0, 10 #adiciona 10 ao reg $12
