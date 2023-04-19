@@ -1,5 +1,5 @@
 .text
-#Escreva um cÛdigo que leia um n˙mero decimal de 0 atÈ 999 e transforme-o em um sistema de base 11
+#Escreva um c√≥digo que leia um n√∫mero decimal de 0 at√© 999 e transforme-o em um sistema de base 11
 main:		addi $2, $0, 5
 		syscall
 		add $8, $0, $2
@@ -14,15 +14,15 @@ decompondo: 	div $8, $9
 	   	mflo $9			#bit mais significativo para $9
 	    
 	    
-	    	addi $25, $0, 10	#adiÁ„o para verificaÁ„o
+	    	addi $25, $0, 10	#adi√ß√£o para verifica√ß√£o
 	    
-impressao1: 	beq $25, $9, imprimirA	#se $9 for = 10, ent„o vai imprimir A
+impressao1: 	beq $25, $9, imprimirA	#se $9 for = 10, ent√£o vai imprimir A
 		j impressaonormal	#
 	   
 imprimirA:  	addi $4, $0, 'A'	#imprime A
 	    	addi $2, $0, 11
 	   	syscall
-	    	j impressao2		#salta para prÛxima impress„o
+	    	j impressao2		#salta para pr√≥xima impress√£o
 	    
 impressaonormal:add $4, $0, $9
 		addi $2, $0, 1
@@ -34,7 +34,7 @@ impressao2:	beq $25, $10, imprimirA2
 imprimirA2:  	addi $4, $0, 'A'
 	    	addi $2, $0, 11
 	    	syscall
-	   	j impressao2
+	   	j impressao3
 	    
 impressaonormal2:add $4, $0, $10
 		 addi $2, $0, 1
