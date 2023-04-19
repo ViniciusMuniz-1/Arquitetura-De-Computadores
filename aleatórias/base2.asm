@@ -35,9 +35,16 @@ main:	addi $2, $0, 5
 	
 	div $8, $25
 	mflo $8		#bit mais sig no reg 8
-	mfhi $16	#bit menos sig no reg 16
+	mfhi $16	#bit meio 16
 	
-impressao: add $4, $0, $8
+	div $8, $25
+	mfhi $8
+	
+impressao: addi $4, $0, 0
+	   addi $2, $0, 1
+	   syscall
+
+	   add $4, $0, $8
 	   addi $2, $0, 1
 	   syscall
 	   
