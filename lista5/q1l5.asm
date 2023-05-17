@@ -1,0 +1,78 @@
+.data
+
+#0X10010000
+.word 1, 0, 5, -2, -5, 7
+
+.text
+main:	addi $13, $0, 0	#INICIALIZANDO VARIÁVEL SUM
+	addi $8, $0, 0	#INICIALIZANDO I
+	
+	addi $11, $0, 1	#ADICIONANDO PARA VERIFICAÇÃO
+	addi $12, $0, 5	#ADICIONANDO PARA VERIFICAÇÃO
+	addi $9, $0, 4	#ADICIONANDO PARA VERIFICAÇÃO
+	
+	addi $16, $0, 100 #ADICIONANDO PARA TROCA
+	
+	addi $10, $0, 6 #CRIAÇÃO PARA VERIFICAÇÃO DO FOR
+	lui $25, 0x1001	#$25 APONTANDO PARA O ENDEREÇO DE MEMÓRIA
+	
+for0:	#VERIFICAÇÃO PARA SAÍDA DO FOR:
+	beq $8, $10 imprimesoma
+	#VERIFICAÇÕES PARA A SOMA:
+	beq $8, $0, soma
+	beq $8, $11, soma
+	beq $8, $12, soma
+	#VERIFICAÇÃO PARA TROCA DE VALOR NA POS 4:
+	beq $8, $9, troca
+		
+	addi $25, $25, 4 #SOMANDO PARA APONTAR PARA O PRÓXIMO ENDEREÇO DE MEMÓRIA
+	
+	addi $8, $8, 1 #INCREMENTANDO O I
+	j for0
+	
+soma:	lw $14, 0($25) #CARREGANDO O VALOR DO ENDEREÇO DE MEMÓRIA PARA O $14
+	add $13, $13, $14 #SOMANDO A VARIAVEL SUM
+	
+	addi $25, $25, 4 #SOMANDO PARA APONTAR PARA O PRÓXIMO ENDEREÇO DE MEMÓRIA
+	
+	addi $8, $8, 1 #INCREMENTANDO O I
+	j for0
+	
+troca:	sw $16, 0($25) #ADICIONADO O QUE TEM NO $16 AO ENDEREÇO DE MEMÓRIA APONTADO POR $25
+	
+	addi $25, $25, 4 #SOMANDO PARA APONTAR PARA O PRÓXIMO ENDEREÇO DE MEMÓRIA
+	
+	addi $8, $8, 1 #INCREMENTANDO O I
+	j for0
+	
+imprimesoma:	add $4, $0, $13
+		addi $2, $0, 1
+		syscall
+		
+continua: #IMPRIMINDO QUEBRA DE LINHA
+	addi $4, $0,10
+	addi $2, $0, 11
+	syscall
+	
+	#REINICIANDO AS VARIAVEIS PARA A IMPRESSÃO DO VETOR INTEIRO
+	addi $8, $0, 0
+	addi $9, $0, 6
+	lui $25, 0x1001
+	
+for1:	beq $8, $9 fim	#VERIFICAÇÃO DE SAÍDA DO FOR
+	
+	lw $4, 0($25)	#CARREGANDO O QUE TEM NO ENDEREÇO DE MEMÓRIA APONTADO POR $25 PARA $4
+	addi $2, $0, 1	#IMPRIMINDO
+	syscall
+	
+	addi $4, $0,10	#IMPRIMINDO QUEBRA DE LINHA
+	addi $2, $0, 11
+	syscall
+	
+	addi $25, $25, 4 #SOMANDO PARA APONTAR PARA O PRÓXIMO ENDEREÇO DE MEMÓRIA
+	
+	addi $8, $8, 1 #INCREMENTANDO O I
+	j for1
+
+fim:	addi $2, $0, 10	#FINALIZANDO PROGRAMA
+	syscall
