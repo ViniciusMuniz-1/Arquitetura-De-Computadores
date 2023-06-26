@@ -5,31 +5,46 @@
 
 
 main:	lui $25, 0x1001		#INICIALIZANDO O ENDEREÇO DE MEMÓRIA INICIAL
-	addi $10, $0, 0xf3ddcf	#INICIALIZANDO A COR AMARELO CLARO
-	addi $11, $0, 0x1b7a47	#INICIALIZANDO A COR MARROM EM HEXA
+	addi $25, $25, 16
+	addi $25, $25, 2048
+	addi $10, $0, 0xf3ddcf	#INICIALIZANDO A COR VERDE
+	addi $11, $0, 0x1b7a47	#INICIALIZANDO A COR AMARELO CLARO
 	addi $16, $0, 0x000000	#INICIALIZANDO A COR PRETA EM HEXA
 	addi $17, $0, 0x92b1f0	#INICIALIZANDO A COR BRANCA EM HEXA
-        addi $12, $0, 0         #CONTADOR DE CHAMADA DE FUNÇÃO     
+        addi $12, $0, 0         #CONTADOR DE CHAMADA DE FUNÇÃO    
+        
+        addi $18, $0, 10	#VARIAVEL FIXA
+        
+        addi $15, $0, 0		#CONTADOR	
 	
-	addi $9, $0, 512	#UNIDADES GRÁFICAS
-	addi $13, $0, 2048	#TAMANHO DE UMA LINHA
-	
-	addi $12, $0, 16	#QUANT DE UNIDADES GRÁFICAS POR CORS
+	addi $9, $0, 596		#UNIDADES GRÁFICAS
+	addi $13, $0, 1436	#ALTURA DO QUADRADO
 	
 for:	slt $14, $13, $0	#SE $14 = 1, ENTÃO PULA PRA MUDACOR TAMBÉM
-	beq $13, $0, mudacor	#SE UMA LINHA INTEIRA FOR PINTADA, ENTÃO PULA-SE PARA PRÓXIMA LINHA COM A MESMA COR DA ANTIGA
-	bne $14, $0, mudacor	#SE UMA LINHA INTEIRA FOR PINTADA, ENTÃO PULA-SE PARA PRÓXIMA LINHA COM A MESMA COR DA ANTIGA
+	beq $15, $18, faz
+        bne $15, $18, faz2
+	 
+faz:	addi $25, $25, 32
+	 
+	addi $15, $0, 0
+	 
+faz2:  	addi $15, $15, 1
+	beq $13, $0, mantercor	#SE UMA LINHA INTEIRA FOR PINTADA, ENTÃO PULA-SE PARA PRÓXIMA LINHA COM A MESMA COR DA ANTIGA
+	bne $14, $0, mantercor	#SE UMA LINHA INTEIRA FOR PINTADA, ENTÃO PULA-SE PARA PRÓXIMA LINHA COM A MESMA COR DA ANTIGA
 	beq $9, $0, continua		
 	
 	addi $9, $9, -1
 	
-	addi $12, $0, 16
+	addi $12, $0, 12	#VERIFICANDO A QUANTIDADE DE PIXEIS A SEREM PINTADOS POR COR
 	
+
+		
 formar: beq $12, $0, next	#VERIFICAÇÃO DO FIM DO FOR
 
 	sw $10, 0($25)		#DESENHANDO NO BITMAP
 	
 	addi $25, $25, 4	#PASSANDO PARA O PRÓXIMO ENDEREÇO DE MEMÓRIA
+	
 	addi $12, $12, -1
 	
 	addi $13, $13, -1	#REDUZINDO UMA UNIDADE GRÁFICA DA LINHA
@@ -38,7 +53,16 @@ formar: beq $12, $0, next	#VERIFICAÇÃO DO FIM DO FOR
 	
 	j formar
 
-next:	addi $12, $0, 16	#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRÁFICAS A SEREM PINTADAS
+next:	addi $12, $0, 12		#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRÁFICAS A SEREM PINTADAS
+
+	beq $15, $18, faz3
+        bne $15, $18, faz4
+
+faz3:	addi $25, $25, 32
+	 
+	addi $15, $0, 0
+	 
+faz4:  	addi $15, $15, 1
 	
 forpre: beq $12, $0, for	#VERIFICAÇÃO DO FIM DO FOR
 
@@ -53,16 +77,15 @@ forpre: beq $12, $0, for	#VERIFICAÇÃO DO FIM DO FOR
 	
 	j forpre
 	
-mudacor: addi $12, $0, 16	#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRÁFICAS A SEREM PINTADAS
-	 addi $13, $0, 2048	#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRÁFICAS POR LINHA
+mantercor: addi $12, $0, 12	#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRÁFICAS A SEREM PINTADAS
+	 addi $13, $0, 1436	#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRÁFICAS POR LINHA
 	 
 	 beq $8, $11, forpre
 	 beq $8, $10, formar
-
-
+	 
 continua: lui $25, 0x1001	#REINICIANDO O ENDEREÇO DE MEMÓRIA INICIAL
 
-	  addi $4, $25, 1552	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHATORRE
+	  addi $4, $25, 1572	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHATORRE
 	  
 	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHATORRE
 
@@ -252,7 +275,7 @@ fim:	addi $2, $0, 10
 #Retorno: 
 funcDesenhaTorre:	  
 
-addi $9, $0, 4	#REINICIALIZANDO O $9 PARA USO
+addi $9, $0, 3	#REINICIALIZANDO O $9 PARA USO
   
 t1:	  add $25, $4, $0	#PULANDO PARA A PRÓXIMA LINHA, ONDE INICIAREMOS O DESENHO DA TORRE
 
@@ -266,26 +289,13 @@ fortorre: beq $9, $0, sait1	#SE $9 = 0, ENTÃO SAI DESSE FOR
 	  
 	  j fortorre
 	  
-sait1:	  addi $25, $25, 480	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DA TORRE
+sait1:	  addi $25, $25, 488	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DA TORRE
 	  
-	  addi $9, $0, 7	#REINICIALIZANDO PARA O USO NO FOR
+	  addi $9, $0, 5	#REINICIALIZANDO PARA O USO NO FOR
 	  
-fortorre2: beq $9, $0, sait2	#SE $9 = 0, ENTÃO SAI DESSE FOR
-
-	   sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	  addi $13, $0, 1	#USANDO PARA PULAR LINHA
 	   
-	   addi $9, $9, -1
-	   
-	   addi $25, $25, 4
-	   
-	   j fortorre2
-	  
-sait2:     addi $25, $25, 488	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DA TORRE
-	   
-	   addi $9, $0, 5	#ADICIONANDO PARA SER O CONTA COLUNAS DO FOR
-	   addi $13, $0, 4	#ADICIONANDO PARA SER O CONTA LINHAS DO FOR
-	   
-fortorre3: beq $9, $0, pulaLtorre #SE $9=0, ENTÃO DEVE-SE PULAR A LINHA PARA CONTINUAR A PINTURA DA TORRE
+fortorre2: beq $9, $0, pulaLtorre #SE $9=0, ENTÃO DEVE-SE PULAR A LINHA PARA CONTINUAR A PINTURA DA TORRE
 	   
 	   sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
 	   
@@ -293,7 +303,7 @@ fortorre3: beq $9, $0, pulaLtorre #SE $9=0, ENTÃO DEVE-SE PULAR A LINHA PARA CON
 	   
 	   addi $25, $25, 4	#PULANDO PARA O PRÓXIMO ENDEREÇO
 	   
-	   j fortorre3
+	   j fortorre2
 	   
 pulaLtorre: beq $13, $0, sait3	#SE $13 = 0, ENTÃO A PINTURA TERMINOU
 	    
@@ -303,25 +313,37 @@ pulaLtorre: beq $13, $0, sait3	#SE $13 = 0, ENTÃO A PINTURA TERMINOU
 	    
 	    addi $9, $0, 5	#REINICIA A QUANTIDADE DE COLUNAS
 	    
+	    j fortorre2
+	    
+sait3:	    addi $25, $25, 496	#PULA PARA A PRÓXIMA LINHA
+	
+	    addi $9, $0, 3	#REINICIALIZANDO PARA O USO NO FOR
+	  
+	    addi $13, $0, 1	#USANDO PARA PULAR LINHA
+	    
+fortorre3: beq $9, $0, pulaLtorre2 #SE $9=0, ENTÃO DEVE-SE PULAR A LINHA PARA CONTINUAR A PINTURA DA TORRE
+	   
+	   sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	   
+	   addi $9, $9, -1	#DECREMENTANDO DO $9 QUE É O NÚMERO DE COLUNAS
+	   
+	   addi $25, $25, 4	#PULANDO PARA O PRÓXIMO ENDEREÇO
+	   
+	   j fortorre3
+	   
+pulaLtorre2: beq $13, $0, sait4	#SE $13 = 0, ENTÃO A PINTURA TERMINOU
+	    
+	    addi $13, $13, -1   #DECREMENTA O NÚMERO DE LINHAS ($13)
+	    
+	    addi $25, $25, 500	#PULA PARA A PRÓXIMA LINHA
+	    
+	    addi $9, $0, 3	#REINICIA A QUANTIDADE DE COLUNAS
+	    
 	    j fortorre3
-	    
-sait3:	    addi $25, $25, 488	#PULA PARA A PRÓXIMA LINHA
-	
-	    addi $9, $0, 7
-	    
-fortorre4:  beq $9, $0, sait4
 
-	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
-	    
-	    addi $9, $9, -1	#DECREMENTANDO A QUANTIDADE DE COLUNAS
-	    
-	    addi $25, $25, 4	#PULANDO PARA O PRÓXIMO ENDEREÇO
-	    
-	    j fortorre4
-
-sait4:	    addi $25, $25, 484	#PULA PARA A PRÓXIMA LINHA
+sait4:	    addi $25, $25, 496	#PULA PARA A PRÓXIMA LINHA
 	
-	    addi $9, $0, 7
+	    addi $9, $0, 5
 	    
 fortorre5:  beq $9, $0, saitorre
 
@@ -344,7 +366,7 @@ saitorre:   jr $31
 #Retorno: 
 funcDesenhaCavalo:	  
 
-addi $9, $0, 5	#REINICIALIZANDO O $9 PARA USO
+addi $9, $0, 4	#REINICIALIZANDO O $9 PARA USO
 
 c1:	    add $25, $4, $0	#PULANDO PARA ONDE INICIAREMOS O DESENHO DO CAVALO
 
@@ -358,27 +380,17 @@ forcavalo:  beq $9, $0, saic1
 	    
 	    j forcavalo
 	    
-saic1:	    addi $25, $25, 496	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
-
-	    addi $9, $0, 5	#REINICIANDO PARA UTILIZAR NA CONSTRUÇÃO DO CAVALO
-	    
-forcavalo2: beq $9, $0, saic2
-
-	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
-	    
-	    addi $9, $9, -1	#DECREMENTANDO $9
-	    
-	    addi $25, $25, 4
-	    
-	    j forcavalo2
-	    
-saic2:	    addi $25, $25, 496	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
+saic1:	    addi $25, $25, 500	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
 
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
 	    
 	    addi $25, $25, 8	#PULANDO PARA DEIXAR UM PONTO EM BRANCO (OLHO DO CAVALO)
 	    
-	    addi $9, $0, 3	#REINICIANDO PARA UTILIZAR NA CONSTRUÇÃO DO CAVALO
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    
+	    addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAV
+	    
+	    addi $9, $0, 4	#REINICIANDO PARA UTILIZAR NA CONSTRUÇÃO DO CAVALO
 	    
 forcavalo3: beq $9, $0, saic3
 
@@ -390,99 +402,26 @@ forcavalo3: beq $9, $0, saic3
 	    
 	    j forcavalo3
 
-saic3:      addi $25, $25, 492	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
-
-	    addi $9, $0, 6	#REINICIANDO PARA UTILIZAR NA CONSTRUÇÃO DO CAVALO
-	    
-	    addi $13, $0, 1	#ADICIONANDO PARA CONTAGEM DE LINHAS
-	    
-forcavalo4: beq $9, $0, pulaLcavalo
+saic3:      addi $25, $25, 496	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
 
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
 	    
-	    addi $9, $9, -1	#DECREMENTANDO $9
-	    
 	    addi $25, $25, 4
 	    
-	    j forcavalo4
-
-pulaLcavalo: beq $13, $0, saic4
-
-             addi $13, $13, -1
-             
-             addi $9, $0, 6
-             
-             addi $25, $25, 488	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
-             
-             j forcavalo4
-
-saic4:	     addi $25, $25, 488	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
-
-	     addi $9, $0, 3	#REINICIANDO PARA UTILIZAR NA CONSTRUÇÃO DO CAVALO
-	     
-	     addi $13, $0, 2	#REINICIANOD PARA UTILIZAR NO FOR5
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
 	    
-forcavalo5:  beq $13, $0, saic5 	#SE $13 = 0 ACABOU O FOR
-	     beq $9, $0, condcavalo	#SE $9 = 0, DEVEMOS APENAS PULAR PARA O PRÓXIMO ESPAÇO
-	     
-	     sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    addi $25, $25, 8
 	    
-	     addi $9, $9, -1	#DECREMENTANDO $9
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
 	    
-	     addi $25, $25, 4
-	     
-	     j forcavalo5
+	    addi $25, $25, 512
 	    
-condcavalo:  addi $25, $25, 4		#PULANDO PARA O PRÓXIMA ENDEREÇO
-	     
-	     addi $13, $13, -1
-	     
-	     addi $9, $0, 2
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    
+	    addi $25, $25, 496
 
-	     j forcavalo5
-
-saic5: 	     addi $25, $25, 484		#PULA LINHA PARA CONTINUAR O DESENHO DO CAVALO
-
-       	     addi $9, $0, 3	        #ADICIONA PARA O FOR
-       
-             addi $13 $0 2
-             
-forcavalo6:  beq $13, $0, saic6 	#SE $13 = 0 ACABOU O FOR
-	     beq $9, $0, condcavalo2	#SE $9 = 0, DEVEMOS APENAS PULAR PARA O PRÓXIMO ESPAÇO
-	     
-	     sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    addi $9, $0, 5	#ADICIONANDO PARA O FOR	     
 	    
-	     addi $9, $9, -1	#DECREMENTANDO $9
-	    
-	     addi $25, $25, 4
-	     
-	     j forcavalo6
-	         
-condcavalo2: addi $25, $25, 4		#PULANDO PARA O PRÓXIMA ENDEREÇO
-	       
-	     addi $13, $13, -1
-	     
-	     addi $9, $0, 2
-              
-	     j forcavalo6 
-	                  
-saic6:	     addi $25, $25, 496
-
-       	     addi $9, $0, 3
-      
-        
-forcavalo7:  beq $9 $0 saic7
-             sw $5, 0($25)
-                  
-             addi $25 $25 4
-                  
-             addi $9 $9 -1
-                  
-             j forcavalo7
-             
-saic7: 	     addi $25 $25 484
-	     addi $9 $0 7
-	     
 forcavalo8:  beq $9 $0 saicavalo
 
              sw $5, 0($25) 
@@ -553,49 +492,10 @@ saib1:	    addi $25, $25, 500  #PULANDO PARA A PRÓXIMA LINHA
 	    addi $25, $25, 4	#PULANDO ENDEREÇO DE MEMÓRIA
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-	    
-	    addi $25, $25, 500  #PULANDO PARA A PRÓXIMA LINHA
-	    
+
+saib3:	    addi $25, $25, 500	  #PULANDO PARA A PRÓXIMA LINHA
+	   
 	    addi $9, $0, 3	#ADICIONANOD PARA O FOR 2 DO BISPO
-	    
-	    addi $13, $0, 2	#ADICIONANDO CONTADOR DE LINHAS PARA O FOR 2 DO BISPO
-	    
-forb2:	    beq $13, $0, saib2
-	    beq $9, $0, pulaLbispo	#SE $9=0 SAI DO FOR
-	    
-	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-	    
-	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREÇO DE MEMÓRIA
-	    
-	    addi $9, $9, -1
-	    
-	    j forb2
-
-pulaLbispo: addi $13, $13, -1	#DECREMENTA A QUANT DE LINHAS
-            
-            addi $25, $25, 500	#PULA PARA PROX LINHA
-            
-            addi $9, $0, 3	#REINICIA AS COLUNAS
-            
-            j forb2
-
-saib2:	    addi $25, $25, -4	#VOLTA UM ENDEREÇO DE MEMÓRIA
-
-	    addi $9, $0, 5	#ADICIONANOD PARA O FOR 2 DO BISPO
-	    	    
-forb3:	    beq $9, $0, saib3	#SE $9 = 0, SAI DO FOR
-	    
-	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-	    
-	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREÇO DE MEMÓRIA
-	    
-	    addi $9, $9, -1
-	    
-	    j forb3
-	    
-saib3:	    addi $25, $25, 488	  #PULANDO PARA A PRÓXIMA LINHA
-	    
-	    addi $9, $0, 7	#ADICIONANOD PARA O FOR 2 DO BISPO
 	    
 	    addi $13, $0, 2	#ADICIONANDO CONTADOR DE LINHAS PARA O FOR 2 DO BISPO
 	    
@@ -612,9 +512,9 @@ forb4:	    beq $13, $0, saibispo
 
 pulaLbispo2: addi $13, $13, -1	#DECREMENTA A QUANT DE LINHAS
             
-            addi $25, $25, 484	#PULA PARA PROX LINHA
+            addi $25, $25, 496	#PULA PARA PROX LINHA
             
-            addi $9, $0, 7	#REINICIA AS COLUNAS
+            addi $9, $0, 5	#REINICIA AS COLUNAS
             
             j forb4
 
@@ -643,11 +543,11 @@ rainha:
 	    
 	    sw $5 0($25)
 	    
-	    addi $25, $25, 496	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
+	    addi $25, $25, 500	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
 	    
 	    
 	    
-	    addi $9, $0, 5	#ADICIONANDO PARA O FOR DA RAINHA
+	    addi $9, $0, 3	#ADICIONANDO PARA O FOR DA RAINHA
 	    
 forrainha:  beq $9, $0, sair1   #QUANDO $9 = 0 SAI DO FOR
 
@@ -659,21 +559,7 @@ forrainha:  beq $9, $0, sair1   #QUANDO $9 = 0 SAI DO FOR
 	    
 	    j forrainha
 	    
-sair1:	    addi $25, $25, 496	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
-
-	    addi $9, $0, 3	#ADICIONANDO PARA O FOR DA RAINHA
-	    
-forrainha2:  beq $9, $0, sair2   #QUANDO $9 = 0 SAI DO FOR
-
-	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-	    
-	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREÇO DE MEMÓRIA
-	    
-	    addi $9, $9 -1
-	    
-	    j forrainha2
-	   
-sair2:      addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
+sair1:	    addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
 
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
 	    
@@ -681,7 +567,7 @@ sair2:      addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS
 	    
 	    addi $9, $0, 3	#ADICIONANDO PARA O FOR
 	    
-	    addi $13, $0, 3	#ADICIONANDO PARA CONTAGEM DE COLUNAS
+	    addi $13, $0, 2	#ADICIONANDO PARA CONTAGEM DE COLUNAS
 	    
 forrainha3: beq $13, $0, sair3	    #SE $13 = 0, SAI DO FOR
 	    beq $9, $0, pulaLrainha #SE $9 = 0, DEVE-SE PULAR A LINHA
@@ -706,7 +592,7 @@ sair3:	     addi $25, $25, -4	#VOLTANDO UM ENDEREÇO DE MEMÓRIA
 
 	     addi $9, $0, 5	#ADICIONANDO PARA O FOR
 
-forrainha4:  beq $9, $0, sair4	#$9 = 0 SAI DO FOR
+forrainha4:  beq $9, $0, sairrainha	#$9 = 0 SAI DO FOR
 	     
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
 	     
@@ -715,21 +601,7 @@ forrainha4:  beq $9, $0, sair4	#$9 = 0 SAI DO FOR
 	     addi $9, $9, -1	
 	     
 	     j forrainha4
-	     
-sair4:	     addi $25, $25, 488	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
-
-	     addi $9, $0, 7	#ADICIONANDO PARA O FOR
-	     
-forrainha5:  beq $9, $0, sairrainha	#$9 = 0 SAI DO FOR
-
-	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-	     
-	     addi $25, $25, 4
-	     
-	     addi $9, $9, -1	
-	     
-	     j forrainha5
-
+	
 sairrainha:	jr $31
 
 #====================================
@@ -763,9 +635,9 @@ saire1:	     addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMO
 	     
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
 
-	     addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
+	     addi $25, $25, 508	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
 	     
-	     addi $9, $0, 5
+	     addi $9, $0, 3
 	     
 	     addi $13, $0, 2	#ADICIONANDO A QUANT DE LNIHA E COL DO FOR
 	     
@@ -782,42 +654,17 @@ forrei2:     beq $13, $0, saire2 #SE $13 = 0 SAI DO FOR
 	    
 pulaLrei1:   addi $13, $13, -1	#REDUZINDO A QUANT DE LINHAS
  	     
- 	     addi $25, $25, 492	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
- 	     
- 	     addi $9, $0, 5
- 	     
- 	     j forrei2
- 	     
-saire2:      addi $25, $25, 4
- 
- 	     addi $9, $0, 3
- 	     
- 	     addi $13, $0, 2
- 	     
-forrei3:     beq $13, $0, saire3 #SE $13 = 0 SAI DO FOR
-	     beq $9, $0, pulaLrei2 #SE $9 = 0, PULA PARA PROX LINHA
-	     
-	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-	     
-	     addi $25, $25, 4
-	     
-	     addi $9, $9, -1
-	     
-	     j forrei3
-	    
-pulaLrei2:   addi $13, $13, -1	#REDUZINDO A QUANT DE LINHAS
- 	     
  	     addi $25, $25, 500	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
  	     
  	     addi $9, $0, 3
  	     
- 	     j forrei3
+ 	     j forrei2
  	     
-saire3:	     addi $25, $25, -4
-	     
+saire2:	     addi $25, $25, -4
+
 	     addi $9, $0, 5
 	     
-forrei4:     beq $9, $0, saire4
+forrei3:     beq $9, $0, sairei
 	     
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
 	     
@@ -825,23 +672,9 @@ forrei4:     beq $9, $0, saire4
 	     
 	     addi $9, $9, -1	#DECREMENTANDO DO I DO FOR
 	     
-	     j forrei4
-	     
-saire4:	     addi $25, $25, 488	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
+	     j forrei3
 
-	     addi $9, $0, 7
-	     
-forrei5:     beq $9, $0, sairei
-	     
-	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-	     
-	     addi $25, $25, 4	#PULANDO PARA O PROX ENDEREÇO DE MEMORIA
-	     
-	     addi $9, $9, -1	#DECREMENTANDO DO I DO FOR
-	     
-	     j forrei5
-
-sairei:		jr $31
+sairei:	     jr $31
 #====================================
 
 #====================================
@@ -849,129 +682,67 @@ sairei:		jr $31
 #Utilidade: desenha um peão a partir de um endereço de memória previamente iniciado
 #Parâmetro: $4 (ENDEREÇO DE MEMÓRIA), $5(COR DE DESENHO)
 #Retorno:
-funcDesenhaPeao:add $25 $0 $4 #COMEÇO DA FUNCDOPEAO
+funcDesenhaPeao:
+	add $25 $0 $4 #COMEÇO DA FUNCDOPEAO
            
-           addi $9 $0 4 #iNÍCIO DA CABEÇA DO PEÃO QUE TERÁ 4 UNIDADES GRÁFICAS
+        addi $9 $0 3 #iNÍCIO DA CABEÇA DO PEÃO QUE TERÁ 4 UNIDADES GRÁFICAS
+        
+        addi $13, $0, 3	#ADICIONANDO PARA O PULALINHA
  
-   forp1: beq $9 $0 saip1       
-         addi $9 $9 -1
+forp1: 	beq $13 $0 saiforpeao1  
+	beq $9, $0, pulaLinhaPeao     
+        addi $9 $9 -1
         
         sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
         
         addi $25 $25 4
         j forp1
         
- saip1: addi $9 $0 4 
-        addi $25 $25 496
+pulaLinhaPeao:
+	addi $9, $0, 3
+	
+	addi $25, $25, 500
+	
+	addi $13, $13, -1
+	
+	j forp1
         
- forp2: beq $9 $0 saip2    
-        addi $9 $9 -1
-        sw $5 0($25)  
-        addi $25 $25 4
-        j forp2
-        
- saip2: addi $9 $0 4 
-        addi $25 $25 496
-        
- forp3: beq $9 $0 saip3
-        addi $9 $9 -1
-        sw $5 0($25)
-        addi $25 $25 4
-        j forp3
- saip3: addi $9 $0 4
-        addi $25 $25 496
-        
- forp4: beq $9 $0 saip4
-        addi $9 $9 -1
-        sw $5 0($25)
-        addi $25 $25 4
-        j forp4
-        
-  saip4: addi $25 $25 500 #FIM DA CABEÇA DO PEÃO E PULA LINHA PARA COMEÇAR O PESCOÇO DA PEÇA
-         addi $9 $0 2     #2 UNI. GRÁFICAS(CONTADOR,OU SEJA, NÃO IMPLEMENTA, MAS SERVE DE PASSO PARA O SW ALOCAR AS UNI. GRÁFICAS) 
-  forpe5: beq $9 $0 saip5
-          addi $9 $9 -1
-          sw $5 0($25)
-          addi $25 $25 4 
-          j forpe5       
-                                                                                                                           
-   saip5: addi $25 $25 500
-          addi $9 $0 4
-  forpe6: beq $9 $0 saip6
-          
-          addi $9 $9 -1
-          
-          sw $5 0($25)
-          
-          addi $25 $25 4
-          
-          j forpe6
- 
-   saip6: addi $25 $25 496
-          addi $9 $0 4
-          
-   forpe7:beq $9 $0 saip7
-          addi $9 $9 -1
-          sw $5 0($25)
-          addi $25 $25 4
-          j forpe7
-          
-     saip7:addi $25 $25 496
-           addi $9 $0 4
-          
-   forpe8:beq $9 $0 saip8
-          addi $9 $9 -1
-          sw $5 0($25)
-          addi $25 $25 4
-          j forpe8 
- 
-   saip8: addi $9 $0 8
-          addi $25 $25 488
-   forpe9:beq $9 $0 saip9
-          addi $9 $9 -1
-          sw $5 0($25) 
-          addi $25 $25 4
-          j forpe9
-    saip9:addi $9 $0 8
-          addi $25 $25 480
-   forpe10:beq $9 $0 saip10
-   
-          addi $9 $9 -1
-          
-          sw $5 0($25) 
-          
-          addi $25 $25 4
-          
-          j forpe10
-             
-   saip10: addi $9 $0 10
-   
-           addi $25 $25 476
-          
-   forpe11:beq $9 $0 saip11
-   
-           addi $9 $9 -1
-           
-           sw $5 0($25) 
-           
-           addi $25 $25 4
-           
-           j forpe11
-                  
-    saip11: addi $9 $0 10
-   
-           addi $25 $25 472
-          
-   forpe12:beq $9 $0 saip12
-   
-           addi $9 $9 -1
-           
-           sw $5 0($25) 
-           
-           addi $25 $25 4
-           
-           j forpe12  
-    saip12: jr $31
+saiforpeao1:
+	addi $25, $25, 4
+	
+	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	
+	addi $25, $25, 508
+	
+	addi $9, $0, 3
+	
+forp2:	beq $9, $0, saiforpeao2
+	
+	addi $9, $9, -1
+	
+	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	
+	addi $25, $25, 4
+	
+	j forp2
+	
+saiforpeao2:
+	addi $25, $25, 496
+	
+	addi $9, $0, 5
+	
+forp3:	beq $9, $0, saipeaofunc
+	
+	addi $9, $9, -1
+	
+	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	
+	addi $25, $25, 4
+	
+	j forp3
+
+saipeaofunc: 
+	jr $31
 #====================================
 
 #<=====================================================================
