@@ -17,7 +17,7 @@ main:	lui $25, 0x1001		#INICIALIZANDO O ENDEREÇO DE MEMÓRIA INICIAL
         
         addi $15, $0, 0		#CONTADOR	
 	
-	addi $9, $0, 596		#UNIDADES GRÁFICAS
+	addi $9, $0, 596	#UNIDADES GRÁFICAS
 	addi $13, $0, 1436	#ALTURA DO QUADRADO
 	
 for:	slt $14, $13, $0	#SE $14 = 1, ENTÃO PULA PRA MUDACOR TAMBÉM
@@ -42,6 +42,7 @@ faz2:  	addi $15, $15, 1
 formar: beq $12, $0, next	#VERIFICAÇÃO DO FIM DO FOR
 
 	sw $10, 0($25)		#DESENHANDO NO BITMAP
+	sw $10, 65536($25)	#DESENHANDO NA SHADOW
 	
 	addi $25, $25, 4	#PASSANDO PARA O PRÓXIMO ENDEREÇO DE MEMÓRIA
 	
@@ -67,6 +68,7 @@ faz4:  	addi $15, $15, 1
 forpre: beq $12, $0, for	#VERIFICAÇÃO DO FIM DO FOR
 
 	sw $11, 0($25)		#DESENHANDO NO BITMAP
+	sw $11, 65536($25)	#DESENHANDO NA SHADOW
 	
 	addi $25, $25, 4	#PASSANDO PARA O PRÓXIMO ENDEREÇO DE MEMÓRIA
 	addi $12, $12, -1
@@ -420,7 +422,49 @@ saiForDesenhaPeao2:
 	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA 8
 	  
 	  jal funcDesenha8	#FUNÇÃO DESENHA 8
-	                                                                                                      
+	  
+	  #MOVIMENTO----------------------------------------
+	  lui $25, 0x1001	#REINICIANDO O ENDEREÇO DE MEMÓRIA
+	  
+	  addi $9, $0, 18	#CONTAGEM DA QUANTIDADE DE UNIDADES GRÁFICASS
+	  
+	  addi $25, $25, 46676	#LOCAL ONDE O PEÃO AZUL É DESENHADO
+	  
+	  addi $8, $0, 2	#QUANTIDADE DE VEZES QUE A CABEÇA DO PEÃO DEVE SER MOVIDA
+	  
+	  addi $10, $0, 5	#CONT MOVE
+	  
+	  formove: beq $9, $0, fim
+	  
+	  lw $23, 65536($25)	#CARREGANDO O ENDEREÇO DA SHADOW PARA O $23
+	  
+	  addi $25, $25, -512	#PEGANDO O ELEMENTO DA LINHA DE BAIXO E MOVENDO PARA CIMA
+	  
+	  sw $23, 0($25)	#DESENHANDO ESSE ELEMENTO NA TELA
+	  
+          bne $10, $0, go
+          
+          addi $25, $25, -4
+          
+go:
+	  bne $8, $0, continua5
+	  
+	  addi $10, $10, -1
+	  
+	  addi $25, $25, 1016
+	  
+	  addi $8, $8, 2
+	  
+	  j formove
+	  
+continua5:addi $8, $8, -1
+	  addi $25, $25, 512
+	  addi $25, $25, 4	  
+	  addi $9, $9, -1
+	  
+	  j formove
+	  
+	                                                                                                   
 	  	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 fim:	addi $2, $0, 10
 	syscall
@@ -436,6 +480,7 @@ funcDesenha1:
            addi $9 $0 7
    for1num:beq $9 $0 sai1num      
            sw $5, 0($25)
+           sw $5, 65536($25)
             		 		
 	   addi $25 $25 512
 	   
@@ -456,6 +501,7 @@ funcDesenha2:
 forDois1: beq $9, $0, saiForDois1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -467,10 +513,12 @@ saiForDois1:
 	addi $25, $25, 508
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -479,6 +527,7 @@ saiForDois1:
 forDois2: beq $9, $0, saiForDois2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -490,10 +539,12 @@ saiForDois2:
 	addi $25, $25, 496
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
@@ -502,6 +553,7 @@ saiForDois2:
 forDois3: beq $9, $0, saiForDois3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -523,12 +575,14 @@ funcDesenha3:
 	add $25, $4, $0	#ENDEREÇO EM QUE COMEÇARÁ O DESENHO DA LETRA A
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $9, $0, 4
 	
 forTres1: beq $9, $0, saiForTres1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $9, $9, -1
 	
@@ -540,10 +594,12 @@ saiForTres1:
 	addi $25, $25, 508
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 504
 	
@@ -552,6 +608,7 @@ saiForTres1:
 forTres2: beq $9, $0, saiForTres2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $9, $9, -1
 	
@@ -563,10 +620,12 @@ saiForTres2:
 	addi $25, $25, 508
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -575,6 +634,7 @@ saiForTres2:
 forTres3: beq $9, $0, saiForTres3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $9, $9, -1
 	
@@ -601,10 +661,12 @@ funcDesenha4:
 forQuatro1: beq $9, $0, saiForQuatro1
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $9, $9, -1
 	
@@ -618,6 +680,7 @@ saiForQuatro1:
 forQuatro2: beq $9, $0, saiForQuatro2
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -633,6 +696,7 @@ saiForQuatro2:
 forQuatro3: beq $9, $0, saiForQuatro3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
@@ -654,6 +718,7 @@ funcDesenha5: add $25 $0 $4
               
 for5num: beq $9 $0 sai5num
          sw $5 0($25)
+         sw $5, 65536($25)
          addi $25 $25 4
          addi $9 $9 -1
          j for5num
@@ -663,6 +728,7 @@ sai5num: addi $25 $25 496
          
 for5num2: beq $9 $0 sai5num1
           sw $5 0($25)
+          sw $5, 65536($25)
           addi $9 $9 -1
           
           addi $25, $25, 512
@@ -672,6 +738,7 @@ sai5num1: addi $9, $0, 4
 
 for5num3:  beq $9, $0, sai5num2
 	   sw $5 0($25)
+	   sw $5, 65536($25)
 	   addi $9 $9 -1
           
           addi $25, $25, 4
@@ -682,6 +749,7 @@ sai5num2: addi $25 $25 508
          
 for5num4: beq $9 $0 sai5num3
           sw $5 0($25)
+          sw $5, 65536($25)
           addi $9 $9 -1
           
           addi $25, $25, 512
@@ -692,6 +760,7 @@ sai5num3: addi $25 $25 -12
 	  
 for5num5: beq $9, $0, sai5num4
 	  sw $5 0($25)
+	  sw $5, 65536($25)
           addi $9 $9 -1
           
           addi $25, $25, 4
@@ -716,6 +785,7 @@ funcDesenha6:
 forSeis1: beq $9, $0, saiForSeis1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -727,10 +797,12 @@ saiForSeis1:
 	addi $25, $25, 496
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
-	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25) 
 	
 	addi $25, $25, 512
 	
@@ -742,6 +814,7 @@ forSeis2: beq $13, $0, saiForSeis2
 	  beq $9, $0, pulaLinhasSeis	 
 	  
 	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	  sw $5, 65536($25)
 	  
 	  addi $9, $9, -1
 	  
@@ -757,18 +830,22 @@ pulaLinhasSeis:
 	  addi $25, $25, 496
 	  
 	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	  sw $5, 65536($25)
 	  
 	  addi $25, $25, 12
 	  
 	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	  sw $5, 65536($25)
 	  
 	  addi $25, $25, 500
 	  
 	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	  sw $5, 65536($25)
 	  
 	  addi $25, $25, 12
 	  
 	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	  sw $5, 65536($25)
 	  
 	  addi $25, $25, 500
 	  
@@ -780,6 +857,7 @@ saiForSeis2:
 forSeis3: beq $9, $0, saiForSeis3
 	  
 	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	  sw $5, 65536($25)
 	  
 	  addi $25, $25, 4
 	  
@@ -806,6 +884,7 @@ funcDesenha7:
 forSete1: beq $9, $0, saiForSete1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -819,6 +898,7 @@ saiForSete1:
 forSete2: beq $9, $0, saiForSete2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
@@ -830,18 +910,22 @@ saiForSete2:
 	addi $25, $25, -4
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 508
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 
 saiFuncDesenha7:
 	jr $31
@@ -860,6 +944,7 @@ funcDesenha8:
 forOito1: beq $9, $0, saiForOito1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -875,10 +960,12 @@ saiForOito1:
 forOito2: beq $9, $0, saiForOito2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $9, $9, -1
 	
@@ -892,6 +979,7 @@ saiForOito2:
 forOito3: beq $9, $0, saiForOito3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -907,10 +995,12 @@ saiForOito3:
 forOito4: beq $9, $0, saiForOito4
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $9, $9, -1
 	
@@ -924,6 +1014,7 @@ saiForOito4:
 forOito5: beq $9, $0, saiForOito5
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -947,10 +1038,12 @@ funcDesenhaA:
 	add $25, $4, $0	#ENDEREÇO EM QUE COMEÇARÁ O DESENHO DA LETRA A
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
-	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25) 
 	
 	addi $9, $0, 2
 	
@@ -960,12 +1053,14 @@ for1LetraA:
 	beq $9, $0, saiForA1
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	addi $9, $9, -1
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -979,6 +1074,7 @@ for2LetraA:
 	beq $9, $0, saiForA2
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO 
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -995,10 +1091,12 @@ for3LetraA:
 	beq $9, $0, saiForA3
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -1028,6 +1126,7 @@ forDesenhaB1:
 	addi $9, $9, -1
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1037,18 +1136,22 @@ saiForB1:
 	addi $25, $25, 500
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -1060,6 +1163,7 @@ forDesenhaB2:
 	addi $9, $9, -1
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1069,18 +1173,22 @@ saiForB2:
 	addi $25, $25, 500
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -1092,6 +1200,7 @@ forDesenhaB3:
 	addi $9, $9, -1
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1117,6 +1226,7 @@ funcDesenhaC:
 forC1:	beq $9, $0, saiforC1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $9, $9, -1
 	
@@ -1132,6 +1242,7 @@ saiforC1:
 forC2:  beq $9, $0, saiforC2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 
@@ -1147,6 +1258,7 @@ saiforC2:
 forC3:  beq $9, $0, saiforC3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 
 	addi $25, $25, 4
 	
@@ -1175,6 +1287,7 @@ funcDesenhaD:
 forD1:  beq $9, $0, saiD1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1189,10 +1302,12 @@ saiD1:  addi $25, $25, 500
 forD2:	beq $9, $0, saiD2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $9, $9, -1
 	
@@ -1205,6 +1320,7 @@ saiD2:	addi $9, $0, 3
 forD3:  beq $9, $0, saiD3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1232,6 +1348,7 @@ funcDesenhaE:
 forE1:  beq $9, $0, saiE1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1246,6 +1363,7 @@ saiE1:	addi $25, $25, 496
 forE2:	beq $9, $0, saiE2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
@@ -1258,6 +1376,7 @@ saiE2:	addi $9, $0, 4
 forE3:  beq $9, $0, saiE3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1272,6 +1391,7 @@ saiE3:	addi $25, $25, 496
 forE4:	beq $9, $0, saiE4
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
@@ -1284,6 +1404,7 @@ saiE4:	addi $9, $0, 4
 forE5:  beq $9, $0, saiE5
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1309,6 +1430,7 @@ funcDesenhaF:
 forF1:  beq $9, $0, saiF1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1323,6 +1445,7 @@ saiF1:	addi $25, $25, 496
 forF2:	beq $9, $0, saiF2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
@@ -1335,6 +1458,7 @@ saiF2:	addi $9, $0, 4
 forF3:  beq $9, $0, saiF3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1349,6 +1473,7 @@ saiF3:	addi $25, $25, 496
 forF4:	beq $9, $0, saiF4
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
@@ -1374,6 +1499,7 @@ funcDesenhaG:
 forG1:	beq $9, $0, saiG1
 
 	 sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	 sw $5, 65536($25)
 	 
 	 addi $25, $25, 4
 	 
@@ -1388,6 +1514,7 @@ saiG1:	 addi $25, $25, 496
 forG2:	beq $9, $0, saiG2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 512
 	
@@ -1396,22 +1523,28 @@ forG2:	beq $9, $0, saiG2
 	j forG2
 	
 saiG2:	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
+
 	
 	addi $25, $25, 8
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -1420,6 +1553,7 @@ saiG2:	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
 forG3:	beq $9, $0, saiG3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1445,10 +1579,12 @@ funcDesenhaH:
 forH1:	beq $9, $0, saiH1
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -1461,6 +1597,7 @@ saiH1:	addi $9, $0, 4
 forH2:	beq $9, $0, saiH2
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1475,10 +1612,12 @@ saiH2:	addi $9, $0, 3
 forH3:	beq $9, $0, saiH3
 
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 12
 	
 	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	sw $5, 65536($25)
 	
 	addi $25, $25, 500
 	
@@ -1508,6 +1647,7 @@ t1:	  add $25, $4, $0	#PULANDO PARA A PRÓXIMA LINHA, ONDE INICIAREMOS O DESENHO 
 fortorre: beq $9, $0, sait1	#SE $9 = 0, ENTÃO SAI DESSE FOR
 
 	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	  sw $5, 65536($25)
 	  
 	  addi $9, $9, -1	#DECREMENTANDO $9
 	  
@@ -1524,6 +1664,7 @@ sait1:	  addi $25, $25, 488	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA 
 fortorre2: beq $9, $0, pulaLtorre #SE $9=0, ENTÃO DEVE-SE PULAR A LINHA PARA CONTINUAR A PINTURA DA TORRE
 	   
 	   sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	   sw $5, 65536($25)
 	   
 	   addi $9, $9, -1	#DECREMENTANDO DO $9 QUE É O NÚMERO DE COLUNAS
 	   
@@ -1550,6 +1691,7 @@ sait3:	    addi $25, $25, 496	#PULA PARA A PRÓXIMA LINHA
 fortorre3: beq $9, $0, pulaLtorre2 #SE $9=0, ENTÃO DEVE-SE PULAR A LINHA PARA CONTINUAR A PINTURA DA TORRE
 	   
 	   sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	   sw $5, 65536($25)
 	   
 	   addi $9, $9, -1	#DECREMENTANDO DO $9 QUE É O NÚMERO DE COLUNAS
 	   
@@ -1574,6 +1716,7 @@ sait4:	    addi $25, $25, 496	#PULA PARA A PRÓXIMA LINHA
 fortorre5:  beq $9, $0, saitorre
 
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $9, $9, -1	#DECREMENTANDO A QUANTIDADE DE COLUNAS
 	    
@@ -1599,6 +1742,7 @@ c1:	    add $25, $4, $0	#PULANDO PARA ONDE INICIAREMOS O DESENHO DO CAVALO
 forcavalo:  beq $9, $0, saic1
 
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $9, $9, -1	#DECREMENTANDO $9
 	    
@@ -1609,10 +1753,12 @@ forcavalo:  beq $9, $0, saic1
 saic1:	    addi $25, $25, 500	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
 
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 8	#PULANDO PARA DEIXAR UM PONTO EM BRANCO (OLHO DO CAVALO)
 	    
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAV
 	    
@@ -1621,6 +1767,7 @@ saic1:	    addi $25, $25, 500	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUAD
 forcavalo3: beq $9, $0, saic3
 
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $9, $9, -1	#DECREMENTANDO $9
 	    
@@ -1631,18 +1778,22 @@ forcavalo3: beq $9, $0, saic3
 saic3:      addi $25, $25, 496	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUADA A PINTURA DO CAVALO
 
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 4
 	    
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 8
 	    
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 512
 	    
 	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIÇÃO
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 496
 
@@ -1651,6 +1802,7 @@ saic3:      addi $25, $25, 496	#PULANDO PARA A PRÓXIMA LINHA, ONDE SERÁ CONTINUA
 forcavalo8:  beq $9 $0 saicavalo
 
              sw $5, 0($25) 
+             sw $5, 65536($25)
 
 	     addi $25 $25 4
           
@@ -1680,6 +1832,7 @@ b1:	    add $25, $4, $0	#INDO PARA ONDE INICIAREMOS O DESENHO DA TORRE
 forbispo1:  beq $9, $0, saib1	#SE $9 = 0 SAI DO FOR
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREÇO DE MEMÓRIA
 	    
@@ -1690,35 +1843,43 @@ forbispo1:  beq $9, $0, saib1	#SE $9 = 0 SAI DO FOR
 saib1:	    addi $25, $25, 500  #PULANDO PARA A PRÓXIMA LINHA
 
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 8	#DEIXANDO UM PIXEL EM "BRANCO"
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 500	#PULANDO PARA A PRÓXIMA LINHA
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 16	#DEIXANDO 3 PIXEIS EM BRANCO
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 496  #PULANDO PARA A PRÓXIMA LINHA
 
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 4	#PULANDO ENDEREÇO DE MEMÓRIA
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 8	#DEIXANDO UM PIXEL EM "BRANCO"
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 4	#PULANDO ENDEREÇO DE MEMÓRIA
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-
+	    sw $5, 65536($25)
+	    
 saib3:	    addi $25, $25, 500	  #PULANDO PARA A PRÓXIMA LINHA
 	   
 	    addi $9, $0, 3	#ADICIONANOD PARA O FOR 2 DO BISPO
@@ -1729,6 +1890,7 @@ forb4:	    beq $13, $0, saibispo
 	    beq $9, $0, pulaLbispo2
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREÇO DE MEMÓRIA
 	    
@@ -1760,14 +1922,17 @@ rainha:
 	    add $25, $4, $0	#PULANDO PARA A PRÓXIMA LINHA, ONDE INICIAREMOS O DESENHO DA RAINHA
 
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 8
 	    
 	    sw $5 0($25)
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 8
 	    
 	    sw $5 0($25)
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 500	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
 	    
@@ -1778,6 +1943,7 @@ rainha:
 forrainha:  beq $9, $0, sair1   #QUANDO $9 = 0 SAI DO FOR
 
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREÇO DE MEMÓRIA
 	    
@@ -1788,6 +1954,7 @@ forrainha:  beq $9, $0, sair1   #QUANDO $9 = 0 SAI DO FOR
 sair1:	    addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
 
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25, 508	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
 	    
@@ -1799,6 +1966,7 @@ forrainha3: beq $13, $0, sair3	    #SE $13 = 0, SAI DO FOR
 	    beq $9, $0, pulaLrainha #SE $9 = 0, DEVE-SE PULAR A LINHA
 	    
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	    sw $5, 65536($25)
 	    
 	    addi $25, $25 4	#PULANDO PARA O PROX ENDEREÇO DE MEMÓRIA
 	    
@@ -1821,6 +1989,7 @@ sair3:	     addi $25, $25, -4	#VOLTANDO UM ENDEREÇO DE MEMÓRIA
 forrainha4:  beq $9, $0, sairrainha	#$9 = 0 SAI DO FOR
 	     
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	     sw $5, 65536($25)
 	     
 	     addi $25, $25, 4
 	     
@@ -1842,6 +2011,7 @@ funcDesenhaRei:
 rei:	     add $25, $4, $0 #MOVENDO PARA A CASA DE POSIÇÃO DO REI
 
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	     sw $5, 65536($25)
 	     
 	     addi $25, $25, 508	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
 	     
@@ -1850,6 +2020,7 @@ rei:	     add $25, $4, $0 #MOVENDO PARA A CASA DE POSIÇÃO DO REI
 forrei1:     beq $9, $0, saire1	#QUANDO $9 = 0, SAI DO FOR
 
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	     sw $5, 65536($25)
 	     
 	     addi $25, $25, 4	#ADICIONANDO PARA O PROX ENDEREÇO DE MEMORIA
 	     
@@ -1860,7 +2031,8 @@ forrei1:     beq $9, $0, saire1	#QUANDO $9 = 0, SAI DO FOR
 saire1:	     addi $25, $25, 504	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
 	     
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
-
+	     sw $5, 65536($25)
+	     
 	     addi $25, $25, 508	#PULANDO PARA A PRÓXIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
 	     
 	     addi $9, $0, 3
@@ -1871,6 +2043,7 @@ forrei2:     beq $13, $0, saire2 #SE $13 = 0 SAI DO FOR
 	     beq $9, $0, pulaLrei1 #SE $9 = 0, PULA PARA PROX LINHA
 	     
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	     sw $5, 65536($25)
 	     
 	     addi $25, $25, 4
 	     
@@ -1893,6 +2066,7 @@ saire2:	     addi $25, $25, -4
 forrei3:     beq $9, $0, sairei
 	     
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIÇÃO ATUAL
+	     sw $5, 65536($25)
 	     
 	     addi $25, $25, 4	#PULANDO PARA O PROX ENDEREÇO DE MEMORIA
 	     
@@ -1920,6 +2094,7 @@ forp1: 	beq $13 $0 saiforpeao1
         addi $9 $9 -1
         
         sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+        sw $5, 65536($25)
         
         addi $25 $25 4
         j forp1
@@ -1937,6 +2112,7 @@ saiforpeao1:
 	addi $25, $25, 4
 	
 	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	sw $5, 65536($25)
 	
 	addi $25, $25, 508
 	
@@ -1947,6 +2123,7 @@ forp2:	beq $9, $0, saiforpeao2
 	addi $9, $9, -1
 	
 	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
@@ -1962,6 +2139,7 @@ forp3:	beq $9, $0, saipeaofunc
 	addi $9, $9, -1
 	
 	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	sw $5, 65536($25)
 	
 	addi $25, $25, 4
 	
