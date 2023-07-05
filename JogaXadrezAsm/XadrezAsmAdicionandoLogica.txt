@@ -1,0 +1,4180 @@
+.data
+#0x10010010
+.word 2, 3, 4, 5, 6, 4, 3, 2
+#0x10010010 + 32
+.word 1, 1, 1, 1, 1, 1, 1, 1
+#0x10010010 + 64
+.word 0, 0, 0, 0, 0, 0, 0, 0
+#0x10010010 + 96
+.word 0, 0, 0, 0, 0, 0, 0, 0
+#0x10010010 + 128
+.word 0, 0, 0, 0, 0, 0, 0, 0
+#0x10010010 + 160
+.word 0, 0, 0, 0, 0, 0, 0, 0
+#0x10010010 + 192
+.word 1, 1, 1, 1, 1, 1, 1, 1
+#0x10010010 + 224
+.word 2, 3, 4, 5, 6, 4, 3, 2
+
+.text
+#NOTA DE VINICIUS: NA HORA DE DESENHAR AS PEï¿½AS, SEMPRE SOME O ENDEREï¿½O DA ï¿½LTIMA +64 PARA O DESENHO DA PRï¿½XIMA PEï¿½A
+#EX.: O DESENHO DA TORRE COMEï¿½OU NO ENDEREï¿½O 1552, ENTï¿½O O DO CAVALO COMEï¿½ARï¿½ NO 1616, O DO BISPO NO 1680 E ASSIM EM DIANTE
+
+
+main:	
+	#==========================================================================================================
+	#INICIANDO VARIAVEIS:
+	lui $25, 0x1001		#INICIALIZANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	lui $24, 0xffff		#INICIANDO PARA RECEBER TECLADO
+
+	addi $25, $25, 2064	#PULANDO PARA ONDE O CENï¿½RIO COMEï¿½ARï¿½ A SER DESENHADO
+	
+	addi $10, $0, 0xf3ddcf	#INICIALIZANDO A COR AMARELA
+	addi $11, $0, 0x1b7a47	#INICIALIZANDO A COR VERDE
+	addi $19, $0, 0xa33100	#INICIANDO MARROM PARA A BORDA
+	addi $16, $0, 0x000000	#INICIALIZANDO A COR PRETA EM HEXA
+	addi $17, $0, 0x92b1f0	#INICIALIZANDO A COR AZUL EM HEXA
+	
+	#==========================================================================================================
+	#DESENHO DO TABULEIRO:
+	
+        addi $18, $0, 10	#VARIAVEL FIXA PARA FAZER A CONTAGEM PARA PULADA DE LINHA DO CENï¿½RIO
+        
+        addi $15, $0, 0		#CONTADOR	
+	
+	addi $9, $0, 595	#UNIDADES GRï¿½FICAS
+	addi $13, $0, 1436	#ALTURA DO QUADRADO
+	
+for:	slt $14, $13, $0	#SE $14 = 1, ENTï¿½O PULA PRA MUDACOR TAMBï¿½M
+	beq $15, $18, offset
+        bne $15, $18, noffset
+	 
+offset:	addi $25, $25, 32
+	 
+	addi $15, $0, 0
+	 
+noffset:addi $15, $15, 1
+	beq $13, $0, mantercor	#SE UMA LINHA INTEIRA FOR PINTADA, ENTï¿½O PULA-SE PARA PRï¿½XIMA LINHA COM A MESMA COR DA ANTIGA
+	bne $14, $0, mantercor	#SE UMA LINHA INTEIRA FOR PINTADA, ENTï¿½O PULA-SE PARA PRï¿½XIMA LINHA COM A MESMA COR DA ANTIGA
+	beq $9, $0, continua		
+	
+	addi $9, $9, -1
+	
+	addi $12, $0, 12	#VERIFICANDO A QUANTIDADE DE PIXEIS A SEREM PINTADOS POR COR
+	
+
+		
+formar: beq $12, $0, next	#VERIFICAï¿½ï¿½O DO FIM DO FOR
+
+	sw $10, 0($25)		#DESENHANDO NO BITMAP
+	sw $10, 65536($25)	#DESENHANDO NA SHADOW
+	
+	addi $25, $25, 4	#PASSANDO PARA O PRï¿½XIMO ENDEREï¿½O DE MEMï¿½RIA
+	
+	addi $12, $12, -1
+	
+	addi $13, $13, -1	#REDUZINDO UMA UNIDADE GRï¿½FICA DA LINHA
+	
+	add $8, $0, $10		#ADICIONANDO A COR NA VARIï¿½VEL AUXILIAR
+	
+	j formar
+
+next:	addi $12, $0, 12	#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRï¿½FICAS A SEREM PINTADAS
+
+	beq $15, $18, faz3
+        bne $15, $18, faz4
+
+faz3:	addi $25, $25, 32
+	 
+	addi $15, $0, 0
+	 
+faz4:  	addi $15, $15, 1
+	
+forpre: beq $12, $0, for	#VERIFICAï¿½ï¿½O DO FIM DO FOR
+
+	sw $11, 0($25)		#DESENHANDO NO BITMAP
+	sw $11, 65536($25)	#DESENHANDO NA SHADOW
+	
+	addi $25, $25, 4	#PASSANDO PARA O PRï¿½XIMO ENDEREï¿½O DE MEMï¿½RIA
+	addi $12, $12, -1
+	
+	addi $13, $13, -1	#REDUZINDO UMA UNIDADE GRAFICA DA LINHA
+	
+	add $8, $0, $11		#ADICIONANDO A COR NA VARIAVEL AUXILIAR
+	
+	j forpre
+	
+mantercor: addi $12, $0, 12	#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRï¿½FICAS A SEREM PINTADAS
+	 addi $13, $0, 1436	#REINICIALIZANDO A QUANTIDADE DE UNIDADES GRï¿½FICAS POR LINHA
+	 
+	 beq $8, $11, forpre
+	 beq $8, $10, formar
+	 
+continua: #DESENHANDO MARROM NA PARTE SUPERIOR DO TABULEIRO
+
+	  addi $18, $0, 10
+	  
+	  addi $4, $0, 2064	#REINICIANDO O PARï¿½METRO
+	  
+	  addi $13, $13, 1
+	  
+forBordaSUP: beq $18, $0, saiForBordaSUP
+
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  add $4, $25, $4
+	  
+	  add $5, $0, $19
+	  
+	  jal funcPintaQuadrado
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	 
+	  addi $4, $4, 48
+	  
+	  sub $4, $4, $25
+	  
+	  addi $18, $18, -1
+	  
+	  j forBordaSUP
+	  
+saiForBordaSUP:	
+	  addi $18, $0, 8
+	  
+	  addi $4, $4, 5664	#REINICIANDO O PARï¿½METRO
+	  
+
+forBordaESQ:	 
+	  beq $18, $0, saiForBordaESQ
+
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  add $4, $25, $4
+	  
+	  add $5, $0, $19
+	  
+	  jal funcPintaQuadrado
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	 
+	  addi $4, $4, 6144
+	  
+	  sub $4, $4, $25
+	  
+	  addi $18, $18, -1
+	  
+	  j forBordaESQ
+	  
+saiForBordaESQ:	
+
+	  addi $18, $0, 8
+	  
+	  addi $4, $0, 0
+	  
+	  addi $4, $4, 8640	#REINICIANDO O PARï¿½METRO
+	  
+
+forBordaDIR:	 
+	  beq $18, $0, saiForBordaDIR
+
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  add $4, $25, $4
+	  
+	  add $5, $0, $19
+	  
+	  jal funcPintaQuadrado
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	 
+	  addi $4, $4, 6144
+	  
+	  sub $4, $4, $25
+	  
+	  addi $18, $18, -1
+	  
+	  j forBordaDIR
+	  
+saiForBordaDIR:	
+
+	  addi $18, $0, 10
+	  
+	  addi $4, $0, 57360	#REINICIANDO O PARAMETRO
+	  
+forBordaINF: beq $18, $0, saiForBordaINF
+
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  add $4, $25, $4
+	  
+	  add $5, $0, $19
+	  
+	  jal funcPintaQuadrado
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	 
+	  addi $4, $4, 48
+	  
+	  sub $4, $4, $25
+	  
+	  addi $18, $18, -1
+	  
+	  j forBordaINF
+	  
+saiForBordaINF:	
+
+#==========================================================================================================	  
+	  #DESENHANDO AS LETRAS:
+	  
+	  #LETRA A DE AMOR
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+
+	  addi $4, $25, 3156	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA A
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA A
+
+	  jal funcDesenhaA	#FUNï¿½ï¿½O DESENHA A
+	  
+	  #LETRA B DE BOLA
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+
+	  addi $4, $25, 3200	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA B
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA B
+
+	  jal funcDesenhaB	#FUNï¿½ï¿½O DESENHA B
+	  
+	  #LETRA C DE CAMALEï¿½O
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+
+	  addi $4, $25, 3248	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA C
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA C
+
+	  jal funcDesenhaC	#FUNï¿½ï¿½O DESENHA C
+	  
+	  #LETRA D DE DADO
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 3292	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA D
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA D
+
+	  jal funcDesenhaD	#FUNï¿½ï¿½O DESENHA D
+	  
+	  #LETRA E DE ELEFANTE
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 3344	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA E
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA E
+
+	  jal funcDesenhaE	#FUNï¿½ï¿½O DESENHA E
+	  
+	  #LETRA F DE FINICIUS
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 3392	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA F
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA F
+	  
+	  jal funcDesenhaF	#FUNï¿½ï¿½O DESENHA F
+	  
+	  #LETRA G DE GAVALO
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 3440	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA G
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA G
+	  
+	  jal funcDesenhaG	#FUNï¿½ï¿½O DESENHA G
+	  
+	  #LETRA H DE HIPOTOTOMO
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 3488	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA H
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA H
+	  
+	  jal funcDesenhaH	#FUNï¿½ï¿½O DESENHA H
+	  
+#==========================================================================================================	  
+	  #DESENHO DOS NUMEROS
+	  
+	  #NUM1
+	  lui $25 0x1001
+	  
+	  addi $4 $25 52780
+	  
+	  add $5 $0 $16
+	  
+	  jal funcDesenha1
+	  
+	  #NUM 2
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 46624	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA 2
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA 2
+	  
+	  jal funcDesenha2	#FUNï¿½ï¿½O DESENHA 2
+	  
+	  #NUM 3
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 40480	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA 3
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA 3
+	  
+	  jal funcDesenha3	#FUNï¿½ï¿½O DESENHA 3
+	  
+	  #NUM 4
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 34336	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA 4
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA 4
+	  
+	  jal funcDesenha4	#FUNï¿½ï¿½O DESENHA 4
+	  
+	  #NUM 5
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 28192	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA 6
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA 6
+	  
+	  jal funcDesenha5	#FUNï¿½ï¿½O DESENHA 6
+	  
+	  #NUM 6
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 22048	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA 6
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA 6
+	  
+	  jal funcDesenha6	#FUNï¿½ï¿½O DESENHA 6
+	  
+	  #NUM 7
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 15904	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA 7
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA 7
+	  
+	  jal funcDesenha7	#FUNï¿½ï¿½O DESENHA 7
+	  
+	  #NUM 8
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 9760	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA 8
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHA 8
+	  
+	  jal funcDesenha8	#FUNï¿½ï¿½O DESENHA 8
+	  
+	  #==========================================================================================================
+	  #DESENHO DAS PECAS:
+
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+
+	  addi $4, $25, 9808	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHATORRE
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHATORRE
+
+	  jal funcDesenhaTorre	#FUNï¿½ï¿½O DESENHA TORRE
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 9852	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHACAVALO
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHACAVALO
+	  
+	  jal funcDesenhaCavalo	#FUNï¿½ï¿½O DESENHA CAVALO
+
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 9900	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHACAVALO
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHABISPO
+	  
+	  jal funcDesenhaBispo
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 9952	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHARAINHA
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHARAINHA
+	  
+	  jal funcDesenhaRainha
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 10008	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHAREI
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHAREI
+	  
+	  jal funcDesenhaRei
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 10044	#ADICIONANDO PARA ENVIAR PARA A FUNC REI
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC REI
+	  
+	  jal funcDesenhaBispo
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 10096	#ADICIONANDO PARA ENVIAR PARA A FUNC BISPO
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC BISPO
+	  
+	  jal funcDesenhaCavalo
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 10140	#ADICIONANDO PARA ENVIAR PARA A FUNC CAVALO
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC CAVALO
+	  
+	  jal funcDesenhaTorre
+	  
+	  addi $18, $0, 15956	#ADICIONANDO PARA CONTAR OS ENDEREï¿½OS DE MEMï¿½RIA DO PEï¿½O
+	  
+	  addi $15, $0, 8	#ADICIONANDO PARA O FOR
+	  
+forpeaomain: beq $15, $0, saiForDesenhaPeao 
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  add $4, $25, $18	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHSAPEAO
+	  
+	  add $5, $0, $16	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHSAPEAO
+	  
+	  addi $18, $18, 48
+	  
+	  addi $15, $15, -1
+	  
+	  jal funcDesenhaPeao
+	  
+	  j forpeaomain
+
+
+saiForDesenhaPeao:
+
+	  addi $18, $0, 46676	#ADICIONANDO PARA CONTAR OS ENDEREï¿½OS DE MEMï¿½RIA DO PEï¿½O
+	  
+	  addi $15, $0, 8	#ADICIONANDO PARA O FOR
+
+forDesenhaPeao2:  
+	
+	  beq $15, $0, saiForDesenhaPeao2
+	  
+	  addi $15, $15, -1
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  add $4, $25, $18	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHSAPEAO
+	  
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR BRANCA PARA A FUNC DESENHSAPEAO
+	  
+	  jal funcDesenhaPeao
+	  
+	  addi $18, $18, 48
+	  
+	  j forDesenhaPeao2
+
+saiForDesenhaPeao2:
+
+	  lui $25, 0x1001	#REINICIANDO PARA O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+
+	  addi $4, $25, 52816	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHATORRE
+	  
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR BRANCA PARA A FUNC DESENHATORRE
+
+	  jal funcDesenhaTorre	#FUNï¿½ï¿½O DESENHA TORRE
+
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 52864	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHACAVALO
+	  
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR BRANCA PARA A FUNC DESENHACAVALO
+	  
+	  jal funcDesenhaCavalo	#FUNï¿½ï¿½O DESENHA CAVALO
+	  
+	   lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 52908	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHABISPO
+	  
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR BRAMCA PARA A FUNC DESENHABISPO
+	  
+	  jal funcDesenhaBispo
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 52960	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHARAINHA
+	  
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHARAINHA
+	  
+	  jal funcDesenhaRainha
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 53016	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHAREI
+	  
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC DESENHAREI
+	  
+	  jal funcDesenhaRei
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 53052	#ADICIONANDO PARA ENVIAR PARA A FUNC REI
+
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC REI
+	  
+	  jal funcDesenhaBispo
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 53104	#ADICIONANDO PARA ENVIAR PARA A FUNC BISPO
+	  
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC BISPO
+	  
+	  jal funcDesenhaCavalo
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 53148	#ADICIONANDO PARA ENVIAR PARA A FUNC CAVALO
+	  
+	  add $5, $0, $17	#ADICIONANDO PARA ENVIAR COR PRETA PARA A FUNC CAVALO
+	  
+	  jal funcDesenhaTorre
+	  
+#==========================================================================================================
+	  #LOGICA DO JOGO:
+	  #PEÇAS TERÃO NÚMEROS PARA VERIFICAÇÃO DO DESTINO
+	  #PEÃO: 1; TORRE:2; CAVALO: 3; BISPO: 4; RAINHA: 5; REI: 6;
+	  #6 REGISTRADORES SERÃO USADOS PARA GUARDAR ISSO, ESSES SENDO:
+	  #$6 = 1(PEAO); $7 = 2(TORRE); $8 = 3(BISPO); $18 = 4(BISPO); $20 = 5(RAINHA); $21 = 6(REI); $22 = USADO PARA VERIFICAR QUAL PEÇA DEVE SER DESENHADA
+	  #REGISTRADOR PARA VERIFICAR DO TECLADO: $15;
+	  #PARÂMETRO DE FUNCOES: $4 PARA ENDERECO E $5 PARA COR;
+	  #PARA OS IFS DENTRO DO JOGO: $12
+	  
+	  
+	  addi $15, $0, 0
+	  
+	  addi $4, $0, 0	#REINICIANDO O VALOR DE PARAMETRO
+	  
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+#==========================================================================================================
+	  
+forPrincipal:  
+	  lui $25, 0x1001
+
+	  lw $15, 0($24) 	#VERIFICANDO SE O USUï¿½RIO DIGITOU ALGO
+	  beq $15, $0, naodig
+	  lw $15, 4($24)	#PEGA O QUE O USUARIO DIGITOU
+	  
+	  #RECEBENDO O TECLADO - USANDO O $24 PARA ISSO - $10, $11, $19, $16, $17 usados para cor
+	  #CORES POR REG: $16 = PRETO $17 = AZUL 
+	  #EXPLICANDO O NOME DOS Rï¿½TULOS: dig (digitou) - I (Inicio) ou D(Destino) - Letra - NUM
+INICIO:		  
+	  addi $12, $0, 'A'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digIA	#VERIFICANDO SE O USUARIO DIGITOU A
+	  addi $12, $0, 'B'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digIB	#VERIFICANDO SE O USUARIO DIGITOU B
+	  addi $12, $0, 'C'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digIC	#VERIFICANDO SE O USUARIO DIGITOU C
+	  addi $12, $0, 'D'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digID	#VERIFICANDO SE O USUARIO DIGITOU D
+	  addi $12, $0, 'E'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digIE	#VERIFICANDO SE O USUARIO DIGITOU E
+	  addi $12, $0, 'F'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digIF	#VERIFICANDO SE O USUARIO DIGITOU F
+	  addi $12, $0, 'G'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digIG	#VERIFICANDO SE O USUARIO DIGITOU G
+	  addi $12, $0, 'H'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digIH	#VERIFICANDO SE O USUARIO DIGITOU H
+	  
+	  j forPrincipal
+
+#==========================================================================================================
+
+  	  digIA: 		#SE ELE DIGITOU A COMO INï¿½CIO, ELE VAI VIR PARA Cï¿½
+  	  lw $15, 4($24)	#VENDO O QUE O USUÁRIO DIGITOU
+  	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFIFCAR SE O USUARIO DIGITOU 1
+  	  	  
+	  beq $15, $12, digIA1	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA
+	  	  
+	  beq $15, $12, digIA2	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFIFCAR SE O USUARIO DIGITOU 1
+  	  	  
+	  beq $15, $12, digIA3	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA
+	  	  
+	  beq $15, $12, digIA4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFIFCAR SE O USUARIO DIGITOU 1
+  	  	  
+	  beq $15, $12, digIA5	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA
+	  	  
+	  beq $15, $12, digIA6	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFIFCAR SE O USUARIO DIGITOU 1
+  	  	  
+	  beq $15, $12, digIA7	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA
+	  	  
+	  beq $15, $12, digIA8	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  jal sleep
+
+	  j digIA
+	  
+	  digIA1:
+	  lui $18, 0x1001
+	  addi $18, $18, 224
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  	  
+	  lw $14, 51776($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 51776	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIA2:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 192
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 45632($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 45632	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIA3:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 160
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 39488($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 39488	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIA4:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 128
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 33344($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 33344	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIA5:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 96
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 27200($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 27200	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIA6:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 64
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 21056($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 21056	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIA7:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1002
+	  addi $18, $18, 32
+	  
+	 	
+	  
+	  lw $14, 14912($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 14912	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIA8:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 0
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 8768($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 8768	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+#==========================================================================================================
+	  	  	  	  
+	  digIB:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIB1	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIB2	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIB3	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIB4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIB5	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIB6	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIB7	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIB8	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  jal sleep
+	  
+	  j digIB
+	  
+	  digIB1:
+	  lui $18, 0x1001
+	  addi $18, $18, 228
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 51824($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 51824	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIB2:		#SE O USUARIO DIGITOU A POSICAO B2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 196
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 45680($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 45680   #PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIB3:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 164
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 39536($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 39536	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIB4:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 132
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 33392($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 33392	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIB5:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 100
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 27248($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 27248	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIB6:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 68
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 21104($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 21104	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIB7:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 36
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 14960($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 14960	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIB8:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 4
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 8816($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 8816	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  
+#==========================================================================================================
+
+	  digIC:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIC1	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIC2	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIC3	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIC4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIC5	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIC6	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIC7	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+
+	  beq $15, $12, digIC8	#VERIFICANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  jal sleep
+	  
+	  j digIC
+	  	  	
+	  digIC1:
+	  lui $18, 0x1001
+	  addi $18, $18, 232
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 51872($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 51872	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIC2:		#SE O USUARIO DIGITOU A POSICAO C2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 200
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 45728($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 45728   #PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIC3:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 168
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 39584($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 39584	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIC4:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 136
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 33440($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 33440	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIC5:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 104
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 27296($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 27296	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIC6:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 72
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 21152($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 21152	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIC7:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 40
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 15008($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+
+	  addi $4, $25, 15008	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIC8:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 8
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 8864($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
+	  
+	  addi $4, $25, 8864	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  
+#==========================================================================================================
+
+	  digID:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADIDIONANDO PARA VERIFIDADAO FINAL DA PEDA	  
+
+	  beq $15, $12, digID1	#VERIFIDANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '2'	#ADIDIONANDO PARA VERIFIDADAO FINAL DA PEDA	  
+
+	  beq $15, $12, digID2	#VERIFIDANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '3'	#ADIDIONANDO PARA VERIFIDADAO FINAL DA PEDA	  
+
+	  beq $15, $12, digID3	#VERIFIDANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '4'	#ADIDIONANDO PARA VERIFIDADAO FINAL DA PEDA	  
+
+	  beq $15, $12, digID4	#VERIFIDANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '5'	#ADIDIONANDO PARA VERIFIDADAO FINAL DA PEDA	  
+
+	  beq $15, $12, digID5	#VERIFIDANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '6'	#ADIDIONANDO PARA VERIFIDADAO FINAL DA PEDA	  
+
+	  beq $15, $12, digID6	#VERIFIDANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '7'	#ADIDIONANDO PARA VERIFIDADAO FINAL DA PEDA	  
+
+	  beq $15, $12, digID7	#VERIFIDANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  addi $12, $0, '8'	#ADIDIONANDO PARA VERIFIDADAO FINAL DA PEDA	  
+
+	  beq $15, $12, digID8	#VERIFIDANDO SE O USUARIO DIGITOU O NUM 2
+	  
+	  jal sleep
+	  
+	  j digID
+	  	  	
+	  digID1:
+	  lui $18, 0x1001
+	  addi $18, $18, 236
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 51920($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
+	  
+	  addi $4, $25, 51920	#PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digID2:		#SE O USUARIO DIGITOU A POSIDAO D2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 204
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 45776($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
+	  
+	  addi $4, $25, 45776   #PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digID3:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 172
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 39632($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
+	  
+	  addi $4, $25, 39632	#PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digID4:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 140
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 33488($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
+	  
+	  addi $4, $25, 33488	#PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digID5:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 108
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 27344($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
+	  
+	  addi $4, $25, 27344	#PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digID6:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 76
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 21200($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
+	  
+	  addi $4, $25, 21200	#PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digID7:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 44
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 15056($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
+
+	  addi $4, $25, 15056	#PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digID8:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 12
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 8912($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
+	  
+	  addi $4, $25, 8912	#PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO DO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO DO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+#==========================================================================================================
+
+	  digIE:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#AEIEIONANEO PARA VERIFIEAEAO FINAL EA PEEA	  
+
+	  beq $15, $12, digIE1	#VERIFIEANEO SE O USUARIO EIGITOU O NUM 2
+	  
+	  addi $12, $0, '2'	#AEIEIONANEO PARA VERIFIEAEAO FINAL EA PEEA	  
+
+	  beq $15, $12, digIE2	#VERIFIEANEO SE O USUARIO EIGITOU O NUM 2
+	  
+	  addi $12, $0, '3'	#AEIEIONANEO PARA VERIFIEAEAO FINAL EA PEEA	  
+
+	  beq $15, $12, digIE3	#VERIFIEANEO SE O USUARIO EIGITOU O NUM 2
+	  
+	  addi $12, $0, '4'	#AEIEIONANEO PARA VERIFIEAEAO FINAL EA PEEA	  
+
+	  beq $15, $12, digIE4	#VERIFIEANEO SE O USUARIO EIGITOU O NUM 2
+	  
+	  addi $12, $0, '5'	#AEIEIONANEO PARA VERIFIEAEAO FINAL EA PEEA	  
+
+	  beq $15, $12, digIE5	#VERIFIEANEO SE O USUARIO EIGITOU O NUM 2
+	  
+	  addi $12, $0, '6'	#AEIEIONANEO PARA VERIFIEAEAO FINAL EA PEEA	  
+
+	  beq $15, $12, digIE6	#VERIFIEANEO SE O USUARIO EIGITOU O NUM 2
+	  
+	  addi $12, $0, '7'	#AEIEIONANEO PARA VERIFIEAEAO FINAL EA PEEA	  
+
+	  beq $15, $12, digIE7	#VERIFIEANEO SE O USUARIO EIGITOU O NUM 2
+	  
+	  addi $12, $0, '8'	#AEIEIONANEO PARA VERIFIEAEAO FINAL EA PEEA	  
+
+	  beq $15, $12, digIE8	#VERIFIEANEO SE O USUARIO EIGITOU O NUM 2
+	  
+	  jal sleep
+	  
+	  j digIE
+	  	  	
+	  digIE1:
+	  lui $18, 0x1001
+	  addi $18, $18, 240
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 51968($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
+	  
+	  addi $4, $25, 51968	#PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO EO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO EO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIE2:		#SE O USUARIO EIGITOU A POSIEAO E2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 208
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 45824($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
+	  
+	  addi $4, $25, 45824   #PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO EO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO EO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIE3:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 176
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 39682($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
+	  
+	  addi $4, $25, 39682	#PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO EO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO EO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIE4:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 144
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 33536($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
+	  
+	  addi $4, $25, 33536	#PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO EO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO EO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIE5:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 112
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 27392($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
+	  
+	  addi $4, $25, 27392	#PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO EO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO EO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIE6:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 80
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 21248($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
+	  
+	  addi $4, $25, 21248	#PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO EO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO EO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIE7:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 48
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 15104($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
+
+	  addi $4, $25, 15104	#PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO EO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO EO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIE8:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 16
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 8960($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
+	  
+	  addi $4, $25, 8960	#PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SE FOR PRETO, VAI PARA O MOVIMENTO EO PEÃO PRETO
+	  beq $14, $11, quadrVerde #SE FOR AZUL, VAI PARA O MOVIMENTO EO PEÃO AZUL
+	  
+	  j casaVazia
+	  
+#==========================================================================================================
+
+	  digIF:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#AFIFIONANFO PARA VFRIFIFAFAO FINAL FA PFFA	  
+
+	  beq $15, $12, digIF1	#VFRIFIFANFO SF O USUARIO FIGITOU O NUM 2
+	  
+	  addi $12, $0, '2'	#AFIFIONANFO PARA VFRIFIFAFAO FINAL FA PFFA	  
+
+	  beq $15, $12, digIF2	#VFRIFIFANFO SF O USUARIO FIGITOU O NUM 2
+	  
+	  addi $12, $0, '3'	#AFIFIONANFO PARA VFRIFIFAFAO FINAL FA PFFA	  
+
+	  beq $15, $12, digIF3	#VFRIFIFANFO SF O USUARIO FIGITOU O NUM 2
+	  
+	  addi $12, $0, '4'	#AFIFIONANFO PARA VFRIFIFAFAO FINAL FA PFFA	  
+
+	  beq $15, $12, digIF4	#VFRIFIFANFO SF O USUARIO FIGITOU O NUM 2
+	  
+	  addi $12, $0, '5'	#AFIFIONANFO PARA VFRIFIFAFAO FINAL FA PFFA	  
+
+	  beq $15, $12, digIF5	#VFRIFIFANFO SF O USUARIO FIGITOU O NUM 2
+	  
+	  addi $12, $0, '6'	#AFIFIONANFO PARA VFRIFIFAFAO FINAL FA PFFA	  
+
+	  beq $15, $12, digIF6	#VFRIFIFANFO SF O USUARIO FIGITOU O NUM 2
+	  
+	  addi $12, $0, '7'	#AFIFIONANFO PARA VFRIFIFAFAO FINAL FA PFFA	  
+
+	  beq $15, $12, digIF7	#VFRIFIFANFO SF O USUARIO FIGITOU O NUM 2
+	  
+	  addi $12, $0, '8'	#AFIFIONANFO PARA VFRIFIFAFAO FINAL FA PFFA	  
+
+	  beq $15, $12, digIF8	#VFRIFIFANFO SF O USUARIO FIGITOU O NUM 2
+	  
+	  jal sleep
+	  
+	  j digIF
+	  	  	
+	  digIF1:
+	  lui $18, 0x1001
+	  addi $18, $18, 244
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 52016($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
+	  
+	  addi $4, $25, 52016	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SF FOR PRFTO, VAI PARA O MOVIMFNTO FO PFÃO PRFTO
+	  beq $14, $11, quadrVerde #SF FOR AZUL, VAI PARA O MOVIMFNTO FO PFÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIF2:		#SF O USUARIO FIGITOU A POSIFAO F2, VFM PARA FA
+	  lui $18, 0x1001
+	  addi $18, $18, 212
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 45872($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
+	  
+	  addi $4, $25, 45872   #PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SF FOR PRFTO, VAI PARA O MOVIMFNTO FO PFÃO PRFTO
+	  beq $14, $11, quadrVerde #SF FOR AZUL, VAI PARA O MOVIMFNTO FO PFÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIF3:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+	  lui $18, 0x1001
+	  addi $18, $18, 180
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 39730($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
+	  
+	  addi $4, $25, 39730	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SF FOR PRFTO, VAI PARA O MOVIMFNTO FO PFÃO PRFTO
+	  beq $14, $11, quadrVerde #SF FOR AZUL, VAI PARA O MOVIMFNTO FO PFÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIF4:
+	  lui $18, 0x1001
+	  addi $18, $18, 148
+	  lw $6 0($18)
+	  sw $0 0($18)		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+	  
+	  lw $14, 33584($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
+	  
+	  addi $4, $25, 33584	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SF FOR PRFTO, VAI PARA O MOVIMFNTO FO PFÃO PRFTO
+	  beq $14, $11, quadrVerde #SF FOR AZUL, VAI PARA O MOVIMFNTO FO PFÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIF5:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+	  lui $18, 0x1001
+	  addi $18, $18, 116
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 27440($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
+	  
+	  addi $4, $25, 27440	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SF FOR PRFTO, VAI PARA O MOVIMFNTO FO PFÃO PRFTO
+	  beq $14, $11, quadrVerde #SF FOR AZUL, VAI PARA O MOVIMFNTO FO PFÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIF6:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+	  lui $18, 0x1001
+	  addi $18, $18, 84
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 21296($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
+	  
+	  addi $4, $25, 21296	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SF FOR PRFTO, VAI PARA O MOVIMFNTO FO PFÃO PRFTO
+	  beq $14, $11, quadrVerde #SF FOR AZUL, VAI PARA O MOVIMFNTO FO PFÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIF7:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+          lui $18, 0x1001
+	  addi $18, $18, 52
+	  lw $6 0($18)
+	  sw $0 0($18)
+	    	  
+	  lw $14, 15152($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
+
+	  addi $4, $25, 15152	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SF FOR PRFTO, VAI PARA O MOVIMFNTO FO PFÃO PRFTO
+	  beq $14, $11, quadrVerde #SF FOR AZUL, VAI PARA O MOVIMFNTO FO PFÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIF8:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+          lui $18, 0x1001
+	  addi $18, $18, 20
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  	  
+	  lw $14, 9008($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
+	  
+	  addi $4, $25, 9008	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SF FOR PRFTO, VAI PARA O MOVIMFNTO FO PFÃO PRFTO
+	  beq $14, $11, quadrVerde #SF FOR AZUL, VAI PARA O MOVIMFNTO FO PFÃO AZUL
+	  
+	  j casaVazia
+	  
+#==========================================================================================================
+
+	  digIG:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#AGIGIONANGO PARA VGRIGIGAGAO GINAL GA PGGA	  
+
+	  beq $15, $12, digIG1	#VGRIGIGANGO SG O USUARIO GIGITOU O NUM 2
+	  
+	  addi $12, $0, '2'	#AGIGIONANGO PARA VGRIGIGAGAO GINAL GA PGGA	  
+
+	  beq $15, $12, digIG2	#VGRIGIGANGO SG O USUARIO GIGITOU O NUM 2
+	  
+	  addi $12, $0, '3'	#AGIGIONANGO PARA VGRIGIGAGAO GINAL GA PGGA	  
+
+	  beq $15, $12, digIG3	#VGRIGIGANGO SG O USUARIO GIGITOU O NUM 2
+	  
+	  addi $12, $0, '4'	#AGIGIONANGO PARA VGRIGIGAGAO GINAL GA PGGA	  
+
+	  beq $15, $12, digIG4	#VGRIGIGANGO SG O USUARIO GIGITOU O NUM 2
+	  
+	  addi $12, $0, '5'	#AGIGIONANGO PARA VGRIGIGAGAO GINAL GA PGGA	  
+
+	  beq $15, $12, digIG5	#VGRIGIGANGO SG O USUARIO GIGITOU O NUM 2
+	  
+	  addi $12, $0, '6'	#AGIGIONANGO PARA VGRIGIGAGAO GINAL GA PGGA	  
+
+	  beq $15, $12, digIG6	#VGRIGIGANGO SG O USUARIO GIGITOU O NUM 2
+	  
+	  addi $12, $0, '7'	#AGIGIONANGO PARA VGRIGIGAGAO GINAL GA PGGA	  
+
+	  beq $15, $12, digIG7	#VGRIGIGANGO SG O USUARIO GIGITOU O NUM 2
+	  
+	  addi $12, $0, '8'	#AGIGIONANGO PARA VGRIGIGAGAO GINAL GA PGGA	  
+
+	  beq $15, $12, digIG8	#VGRIGIGANGO SG O USUARIO GIGITOU O NUM 2
+	  
+	  jal sleep
+	  
+	  j digIG
+	  	  	
+	  digIG1:
+	  lui $18, 0x1001
+	  addi $18, $18, 248
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 52064($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
+	  
+	  addi $4, $25, 52064	#PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SG GOR PRGTO, VAI PARA O MOVIMGNTO GO PGÃO PRGTO
+	  beq $14, $11, quadrVerde #SG GOR AZUL, VAI PARA O MOVIMGNTO GO PGÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIG2:		#SG O USUARIO GIGITOU A POSIGAO G2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 216
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 45920($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
+	  
+	  addi $4, $25, 45920   #PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SG GOR PRGTO, VAI PARA O MOVIMGNTO GO PGÃO PRGTO
+	  beq $14, $11, quadrVerde #SG GOR AZUL, VAI PARA O MOVIMGNTO GO PGÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIG3:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 184
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 39778($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
+	  
+	  addi $4, $25, 39778	#PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SG GOR PRGTO, VAI PARA O MOVIMGNTO GO PGÃO PRGTO
+	  beq $14, $11, quadrVerde #SG GOR AZUL, VAI PARA O MOVIMGNTO GO PGÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIG4:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 152
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 33632($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
+	  
+	  addi $4, $25, 33632	#PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SG GOR PRGTO, VAI PARA O MOVIMGNTO GO PGÃO PRGTO
+	  beq $14, $11, quadrVerde #SG GOR AZUL, VAI PARA O MOVIMGNTO GO PGÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIG5:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 120
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 27488($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
+	  
+	  addi $4, $25, 27488	#PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SG GOR PRGTO, VAI PARA O MOVIMGNTO GO PGÃO PRGTO
+	  beq $14, $11, quadrVerde #SG GOR AZUL, VAI PARA O MOVIMGNTO GO PGÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIG6:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 88
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 21344($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
+	  
+	  addi $4, $25, 21344	#PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SG GOR PRGTO, VAI PARA O MOVIMGNTO GO PGÃO PRGTO
+	  beq $14, $11, quadrVerde #SG GOR AZUL, VAI PARA O MOVIMGNTO GO PGÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIG7:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 56
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 15200($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
+
+	  addi $4, $25, 15200	#PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SG GOR PRGTO, VAI PARA O MOVIMGNTO GO PGÃO PRGTO
+	  beq $14, $11, quadrVerde #SG GOR AZUL, VAI PARA O MOVIMGNTO GO PGÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIG8:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 24
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 9056($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
+	  
+	  addi $4, $25, 9056	#PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SG GOR PRGTO, VAI PARA O MOVIMGNTO GO PGÃO PRGTO
+	  beq $14, $11, quadrVerde #SG GOR AZUL, VAI PARA O MOVIMGNTO GO PGÃO AZUL
+	  
+	  j casaVazia
+	  
+#==========================================================================================================
+
+	  digIH:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#AHIHIONANHO PARA VHRIHIHAHAO HINAL HA PHHA	  
+
+	  beq $15, $12, digIH1	#VHRIHIHANHO SH O USUARIO HIHITOU O NUM 2
+	  
+	  addi $12, $0, '2'	#AHIHIONANHO PARA VHRIHIHAHAO HINAL HA PHHA	  
+
+	  beq $15, $12, digIH2	#VHRIHIHANHO SH O USUARIO HIHITOU O NUM 2
+	  
+	  addi $12, $0, '3'	#AHIHIONANHO PARA VHRIHIHAHAO HINAL HA PHHA	  
+
+	  beq $15, $12, digIH3	#VHRIHIHANHO SH O USUARIO HIHITOU O NUM 2
+	  
+	  addi $12, $0, '4'	#AHIHIONANHO PARA VHRIHIHAHAO HINAL HA PHHA	  
+
+	  beq $15, $12, digIH4	#VHRIHIHANHO SH O USUARIO HIHITOU O NUM 2
+	  
+	  addi $12, $0, '5'	#AHIHIONANHO PARA VHRIHIHAHAO HINAL HA PHHA	  
+
+	  beq $15, $12, digIH5	#VHRIHIHANHO SH O USUARIO HIHITOU O NUM 2
+	  
+	  addi $12, $0, '6'	#AHIHIONANHO PARA VHRIHIHAHAO HINAL HA PHHA	  
+
+	  beq $15, $12, digIH6	#VHRIHIHANHO SH O USUARIO HIHITOU O NUM 2
+	  
+	  addi $12, $0, '7'	#AHIHIONANHO PARA VHRIHIHAHAO HINAL HA PHHA	  
+
+	  beq $15, $12, digIH7	#VHRIHIHANHO SH O USUARIO HIHITOU O NUM 2
+	  
+	  addi $12, $0, '8'	#AHIHIONANHO PARA VHRIHIHAHAO HINAL HA PHHA	  
+
+	  beq $15, $12, digIH8	#VHRIHIHANHO SH O USUARIO HIHITOU O NUM 2
+	  
+	  jal sleep
+	  
+	  j digIH
+	  	  	
+	  digIH1:
+	  lui $18, 0x1001
+	  addi $18, $18, 252
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 52112($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
+	  
+	  addi $4, $25, 52112	#PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SH HOR PRHTO, VAI PARA O MOVIMHNTO HO PHÃO PRHTO
+	  beq $14, $11, quadrVerde #SH HOR AZUL, VAI PARA O MOVIMHNTO HO PHÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIH2:		#SH O USUARIO HIHITOU A POSIHAO H2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 220
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 45968($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
+	  
+	  addi $4, $25, 45968   #PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SH HOR PRHTO, VAI PARA O MOVIMHNTO HO PHÃO PRHTO
+	  beq $14, $11, quadrVerde #SH HOR AZUL, VAI PARA O MOVIMHNTO HO PHÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIH3:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 188
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 39826($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
+	  
+	  addi $4, $25, 39826	#PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SH HOR PRHTO, VAI PARA O MOVIMHNTO HO PHÃO PRHTO
+	  beq $14, $11, quadrVerde #SH HOR AZUL, VAI PARA O MOVIMHNTO HO PHÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIH4:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 156
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 33680($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
+	  
+	  addi $4, $25, 33680	#PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SH HOR PRHTO, VAI PARA O MOVIMHNTO HO PHÃO PRHTO
+	  beq $14, $11, quadrVerde #SH HOR AZUL, VAI PARA O MOVIMHNTO HO PHÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIH5:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 124
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 27536($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
+	  
+	  addi $4, $25, 27536	#PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SH HOR PRHTO, VAI PARA O MOVIMHNTO HO PHÃO PRHTO
+	  beq $14, $11, quadrVerde #SH HOR AZUL, VAI PARA O MOVIMHNTO HO PHÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIH6:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 92
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 21392($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
+	  
+	  addi $4, $25, 21392	#PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SH HOR PRHTO, VAI PARA O MOVIMHNTO HO PHÃO PRHTO
+	  beq $14, $11, quadrVerde #SH HOR AZUL, VAI PARA O MOVIMHNTO HO PHÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIH7:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 60
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 15248($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
+
+	  addi $4, $25, 15248	#PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SH HOR PRHTO, VAI PARA O MOVIMHNTO HO PHÃO PRHTO
+	  beq $14, $11, quadrVerde #SH HOR AZUL, VAI PARA O MOVIMHNTO HO PHÃO AZUL
+	  
+	  j casaVazia
+	  
+	  digIH8:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 28
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
+	  lw $14, 9104($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
+	  
+	  addi $4, $25, 9104	#PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
+	  
+	  beq $14, $10, quadrAmarelo ##SH HOR PRHTO, VAI PARA O MOVIMHNTO HO PHÃO PRHTO
+	  beq $14, $11, quadrVerde #SH HOR AZUL, VAI PARA O MOVIMHNTO HO PHÃO AZUL
+	  
+	  j casaVazia
+	  
+#==========================================================================================================
+	  
+quadrAmarelo:
+	  add $5, $0, $10	#LEMBRAR DE GUARDAR ISSO PARA LEVAR PARA O DESTINO, ISSO DETERMINA A COR DA PEÇA
+	  	  
+	  jal funcPintaQuadrado
+	  
+	  add $5, $0, $17	#ADICIONANDO A COR DA PEÇA
+	  
+	  j DESTINO
+
+quadrVerde:  	  
+	  add $5, $0, $11	#LEMBRAR DE GUARDAR ISSO PARA LEVAR PARA O DESTINO, ISSO DETERMINA A COR DA PEÇA
+	  	  
+	  jal funcPintaQuadrado
+	  
+	  add $5, $0, $17	#ADICIONANDO A COR DA PEÇA
+	  
+	  j DESTINO
+	  
+casaVazia: #RETORNA ERRO
+
+	  j forPrincipal  
+	  
+	  
+#==========================================================================================================
+
+DESTINO:  
+	  lw $15, 0($24) 	#VERIFICANDO SE O USUï¿½RIO DIGITOU ALGO
+	  beq $15, $0, naodig2
+	  lw $15, 4($24)	#PEGA O QUE O USUARIO DIGITOU
+
+	  addi $12, $0, 'A'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digDA	#VERIFICANDO SE O USUARIO DIGITOU A
+	  addi $12, $0, 'B'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digDB	#VERIFICANDO SE O USUARIO DIGITOU B
+	  addi $12, $0, 'C'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digDC	#VERIFICANDO SE O USUARIO DIGITOU C
+	  addi $12, $0, 'D'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digDD	#VERIFICANDO SE O USUARIO DIGITOU D
+	  addi $12, $0, 'E'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digDE	#VERIFICANDO SE O USUARIO DIGITOU E
+	  addi $12, $0, 'F'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digDF	#VERIFICANDO SE O USUARIO DIGITOU F
+	  addi $12, $0, 'G'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digDG	#VERIFICANDO SE O USUARIO DIGITOU G
+	  addi $12, $0, 'H'	#ADICIONANDO PARA VERIFICACAO DO ENDEREÇO DE INICIO
+	  beq $15, $12, digDH	#VERIFICANDO SE O USUARIO DIGITOU H
+	  
+	  j DESTINO
+	
+	  digDA:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDA1
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDA2
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDA3	  	    
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+	  beq $15, $12, digDA4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 4
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDA5
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDA6
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDA7
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDA8
+	  
+	  jal sleep
+	  
+	  j digDA
+	  
+	  digDA1:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 52816	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 228
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDA2:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 46672	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 196
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDA3:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 40528
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 164
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDA4:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 34384	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 132
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  
+	  digDA5:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 28240	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 100
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	   
+	   j forPrincipal
+	   
+	  digDA6:
+	   lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 22096	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 68
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDA7:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 15952	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 32
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDA8:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 9808	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 0
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+
+#===================================	  
+	  digDB:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB1
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB2
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB3	  	    
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+	  beq $15, $12, digDB4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 4
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB5
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB6
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB7
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB8
+	  
+	  jal sleep
+	   
+	  j digDB
+	  
+	  digDB1:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 52864	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 232
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDB2:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 46720	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 200
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDB3:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 40576	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 168
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDB4:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 34432	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 136
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  
+	  digDB5:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 28288	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 104
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	   
+	   j forPrincipal
+	   
+	  digDB6:
+	   lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 22144	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 72
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDB7:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 16000	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 40
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  digDB8:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 9852	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 8
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  	  
+	  
+	  j forPrincipal
+#==========================================================================================================
+
+	  digDC:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDC1
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  #beq $15, $12, digDC2
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  #beq $15, $12, digDC3	  	    
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+	  #beq $15, $12, digDC4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 4
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  #beq $15, $12, digDC5
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  #beq $15, $12, digDC6
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  #beq $15, $12, digDC7
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  #beq $15, $12, digDC8
+	  
+	  jal sleep
+	   
+	  j digDC
+	  
+	  digDC1:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 52912	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 228
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+#==========================================================================================================
+
+	  digDD:
+	  
+#==========================================================================================================
+
+	  digDE:
+	  
+#==========================================================================================================
+
+	  digDF:
+	  
+#==========================================================================================================
+
+	  digDG:
+	  
+#==========================================================================================================
+
+	  digDH:
+	  
+#==========================================================================================================	  
+#PEÇAS:
+peao:
+jal funcDesenhaPeao
+j forPrincipal
+
+torre:
+jal funcDesenhaTorre
+j forPrincipal
+
+cavalo:
+jal funcDesenhaCavalo
+j forPrincipal
+
+bispo:
+jal funcDesenhaBispo
+j forPrincipal
+
+rainha:
+jal funcDesenhaRainha
+j forPrincipal
+
+rei:
+jal funcDesenhaRei
+j forPrincipal
+#==========================================================================================================	  
+naodig:   jal sleep
+	
+	  j forPrincipal
+
+naodig2:   jal sleep
+	
+	  j DESTINO
+	  	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+fim:	addi $2, $0, 10
+	syscall
+	
+	
+##Nome: funcPintaQuadrado
+#Utilidade: desenha 1 quadrado a partir de um endereï¿½o de memï¿½ria previamente iniciado e uma cor
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcPintaQuadrado:
+	add $25, $4, $0
+	
+	addi $12, $0, 12
+	
+	addi $13, $0, 11
+
+comecaquadrado:
+	beq $13, $0, saiFuncPintaQuadrado
+	beq $12, $0, pulaLinhaQuadrado	#VERIFICAï¿½ï¿½O DO FIM DO FOR
+
+	sw $5, 0($25)		#DESENHANDO NO BITMAP
+	sw $5, 65536($25)	#DESENHANDO NA SHADOW
+	
+	addi $25, $25, 4	#PASSANDO PARA O PRï¿½XIMO ENDEREï¿½O DE MEMï¿½RIA
+	
+	addi $12, $12, -1
+	
+	j comecaquadrado
+	
+pulaLinhaQuadrado:
+	addi $13, $13, -1
+	
+	addi $12, $12, 12
+	
+	addi $25, $25, 464
+	
+	j comecaquadrado
+
+saiFuncPintaQuadrado: jr $31
+
+
+#ESPAï¿½O DAS FUNï¿½ï¿½ES DE DESENHOS DE Nï¿½MEROS >:(
+#>=====================================================================
+#Nome: funcDesenha1
+#Utilidade: desenha a 1 a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenha1:
+           add $25 $0 $4
+           addi $9 $0 7
+   for1num:beq $9 $0 sai1num      
+           sw $5, 0($25)
+           sw $5, 65536($25)
+            		 		
+	   addi $25 $25 512
+	   
+	   addi $9 $9 -1
+           j for1num
+   sai1num: jr $31
+ 
+#====================================
+#Nome: funcDesenha2
+#Utilidade: desenha o num 2 a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenha2:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DO NUM 2
+	
+	addi $9, $0,4
+	
+forDois1: beq $9, $0, saiForDois1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forDois1
+
+saiForDois1:
+	addi $25, $25, 508
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	addi $9, $0, 4
+	
+forDois2: beq $9, $0, saiForDois2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forDois2
+
+saiForDois2:
+	addi $25, $25, 496
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	addi $9, $0, 4
+	
+forDois3: beq $9, $0, saiForDois3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forDois3
+
+saiForDois3:
+
+saiFuncDesenha2:
+	jr $31
+	
+#====================================
+#Nome: funcDesenha3
+#Utilidade: desenha o num 3 a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenha3:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA A
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $9, $0, 4
+	
+forTres1: beq $9, $0, saiForTres1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $9, $9, -1
+	
+	addi $25, $25, 4
+	
+	j forTres1
+
+saiForTres1:
+	addi $25, $25, 508
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 504
+	
+	addi $9, $0, 3
+	
+forTres2: beq $9, $0, saiForTres2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $9, $9, -1
+	
+	addi $25, $25, 4
+	
+	j forTres2
+	
+saiForTres2:
+	addi $25, $25, 508
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	addi $9, $0, 4
+	
+forTres3: beq $9, $0, saiForTres3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $9, $9, -1
+	
+	addi $25, $25, 4
+	
+	j forTres3
+	
+saiForTres3:
+	
+saiFuncDesenha3:
+	jr $31
+	
+#====================================
+#Nome: funcDesenha4
+#Utilidade: desenha o num 4 a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenha4:
+
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA A
+	
+	addi $9, $0, 3
+	
+forQuatro1: beq $9, $0, saiForQuatro1
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $9, $9, -1
+	
+	addi $25, $25, 500
+	
+	j forQuatro1
+
+saiForQuatro1:
+	addi $9,$0, 4
+	
+forQuatro2: beq $9, $0, saiForQuatro2
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forQuatro2
+
+saiForQuatro2:
+	addi $9, $0, 3
+	
+	addi $25, $25, 508
+	
+forQuatro3: beq $9, $0, saiForQuatro3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	addi $9, $9, -1
+	
+	j forQuatro3
+	
+saiForQuatro3:
+
+saiFuncDesenha4:
+	jr $31
+#====================================
+#Nome: funcDesenha5
+#Utilidade: desenha o num 5 a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenha5: add $25 $0 $4
+              addi $9 $0 4
+              
+for5num: beq $9 $0 sai5num
+         sw $5 0($25)
+         sw $5, 65536($25)
+         addi $25 $25 4
+         addi $9 $9 -1
+         j for5num
+                 
+sai5num: addi $25 $25 496
+         addi $9 $0 2
+         
+for5num2: beq $9 $0 sai5num1
+          sw $5 0($25)
+          sw $5, 65536($25)
+          addi $9 $9 -1
+          
+          addi $25, $25, 512
+          j for5num2
+          
+sai5num1: addi $9, $0, 4
+
+for5num3:  beq $9, $0, sai5num2
+	   sw $5 0($25)
+	   sw $5, 65536($25)
+	   addi $9 $9 -1
+          
+          addi $25, $25, 4
+          j for5num3
+	
+sai5num2: addi $25 $25 508
+          addi $9 $0 2
+         
+for5num4: beq $9 $0 sai5num3
+          sw $5 0($25)
+          sw $5, 65536($25)
+          addi $9 $9 -1
+          
+          addi $25, $25, 512
+          j for5num4
+          
+sai5num3: addi $25 $25 -12
+	  addi $9, $0, 4
+	  
+for5num5: beq $9, $0, sai5num4
+	  sw $5 0($25)
+	  sw $5, 65536($25)
+          addi $9 $9 -1
+          
+          addi $25, $25, 4
+          
+          j for5num5
+
+sai5num4:
+            
+sai53num: jr $31
+	
+#====================================
+#Nome: funcDesenha6
+#Utilidade: desenha o num 6 a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenha6:
+
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DO NUM 6
+	
+	addi $9, $0, 4
+	
+forSeis1: beq $9, $0, saiForSeis1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forSeis1
+
+saiForSeis1:
+	addi $25, $25, 496
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25) 
+	
+	addi $25, $25, 512
+	
+	addi $9, $0, 4
+	
+	addi $13, $0, 1
+	
+forSeis2: beq $13, $0, saiForSeis2
+	  beq $9, $0, pulaLinhasSeis	 
+	  
+	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	  sw $5, 65536($25)
+	  
+	  addi $9, $9, -1
+	  
+	  addi $25, $25, 4
+	  
+	  j forSeis2
+	  
+pulaLinhasSeis:
+	  addi $9, $0, 4
+	  
+	  addi $13, $13, -1
+	  
+	  addi $25, $25, 496
+	  
+	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	  sw $5, 65536($25)
+	  
+	  addi $25, $25, 12
+	  
+	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	  sw $5, 65536($25)
+	  
+	  addi $25, $25, 500
+	  
+	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	  sw $5, 65536($25)
+	  
+	  addi $25, $25, 12
+	  
+	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	  sw $5, 65536($25)
+	  
+	  addi $25, $25, 500
+	  
+	  j forSeis2
+	  
+saiForSeis2:
+	  addi $9, $0, 4
+	  
+forSeis3: beq $9, $0, saiForSeis3
+	  
+	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	  sw $5, 65536($25)
+	  
+	  addi $25, $25, 4
+	  
+	  addi $9, $9, -1
+	  
+	  j forSeis3
+	
+saiForSeis3:
+	
+saiFuncDesenha6:
+	jr $31
+	
+#====================================
+#Nome: funcDesenha7
+#Utilidade: desenha o num 7 a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenha7:
+
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DO NUM 6
+	
+	addi $9, $0, 3
+	
+forSete1: beq $9, $0, saiForSete1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forSete1
+
+saiForSete1:
+	addi $9, $0, 3
+	
+forSete2: beq $9, $0, saiForSete2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	addi $9, $9, -1
+	
+	j forSete2
+
+saiForSete2:
+	addi $25, $25, -4
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 508
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+
+saiFuncDesenha7:
+	jr $31
+	
+#====================================
+#Nome: funcDesenha8
+#Utilidade: desenha o num 8 a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenha8:
+
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DO NUM 6
+	
+	addi $9, $0, 4	
+	
+forOito1: beq $9, $0, saiForOito1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forOito1
+
+saiForOito1:
+	addi $25, $25, 496
+
+	addi $9, $0, 2
+	
+forOito2: beq $9, $0, saiForOito2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $9, $9, -1
+	
+	addi $25, $25, 500
+	
+	j forOito2
+
+saiForOito2:
+	addi $9, $0, 4	
+	
+forOito3: beq $9, $0, saiForOito3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forOito3
+
+saiForOito3:
+	addi $25, $25, 496
+
+	addi $9, $0, 2
+	
+forOito4: beq $9, $0, saiForOito4
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $9, $9, -1
+	
+	addi $25, $25, 500
+	
+	j forOito4
+
+saiForOito4:
+	addi $9, $0, 4	
+	
+forOito5: beq $9, $0, saiForOito5
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forOito5
+
+saiForOito5:
+	
+saiFuncDesenha8:
+	jr $31
+			
+#ESPAï¿½O DAS FUNï¿½ï¿½ES DE DESENHOS DE LETRAS >:(
+#>=====================================================================
+#====================================
+#Nome: funcDesenhaA
+#Utilidade: desenha a letra A a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenhaA:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA A
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25) 
+	
+	addi $9, $0, 2
+	
+	addi $25, $25, 504
+	
+for1LetraA:
+	beq $9, $0, saiForA1
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	addi $9, $9, -1
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	j for1LetraA
+	
+
+saiForA1:
+	addi $9, $0, 4
+	
+for2LetraA:
+	beq $9, $0, saiForA2
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O 
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j for2LetraA
+	
+saiForA2:
+	addi $25, $25, 496
+	
+	addi $9, $9, 3
+	
+for3LetraA:
+	beq $9, $0, saiForA3
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	addi $9, $9, -1
+	
+	j for3LetraA
+
+saiForA3:
+
+saiFuncDesenhaA: 
+	jr $31
+#====================================
+
+#====================================
+#Nome: funcDesenhaB
+#Utilidade: desenha a letra B a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:	
+funcDesenhaB:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA B
+	
+	addi $9, $0, 3	#ADICIONANDO I PARA O FOR
+	
+forDesenhaB1: 
+	beq $9, $0, saiForB1
+	
+	addi $9, $9, -1
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	j forDesenhaB1
+	
+saiForB1:
+	addi $25, $25, 500
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	addi $9, $0, 3	#ADICIONANDO I PARA O FOR
+	
+forDesenhaB2:
+	beq $9, $0, saiForB2
+	
+	addi $9, $9, -1
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	j forDesenhaB2
+	
+saiForB2:
+	addi $25, $25, 500
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	addi $9, $0, 3	#ADICIONANDO I PARA O FOR
+	
+forDesenhaB3:
+	beq $9, $0, saiForB3
+	
+	addi $9, $9, -1
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	j forDesenhaB3
+	
+saiForB3:
+	
+saiFuncDesenhaLetraB:
+	jr $31
+	
+#====================================
+
+#====================================
+#Nome: funcDesenhaC
+#Utilidade: desenha a letra C a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenhaC:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA C
+	
+	addi $9, $0, 4	#ADICIONANDO I PARA O FOR
+
+forC1:	beq $9, $0, saiforC1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $9, $9, -1
+	
+	addi $25, $25, 4
+	
+	j forC1
+	
+saiforC1:
+	addi $25, $25, 492
+	
+	addi $9, $0, 5
+	
+forC2:  beq $9, $0, saiforC2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+
+	addi $9, $9, -1
+	
+	j forC2
+
+saiforC2:
+	addi $25, $25, 4	
+
+	addi $9, $0, 4
+	
+forC3:  beq $9, $0, saiforC3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forC3
+
+saiforC3:
+	
+	
+saiFuncDesenhaC:
+	jr $31
+	
+#====================================
+
+#====================================
+#Nome: funcDesenhaD
+#Utilidade: desenha a letra D a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenhaD:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA D
+	
+	addi $9, $0, 3
+	
+forD1:  beq $9, $0, saiD1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forD1
+
+saiD1:  addi $25, $25, 500
+	
+	addi $9, $0, 5
+
+forD2:	beq $9, $0, saiD2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $9, $9, -1
+	
+	addi $25, $25, 500
+	
+	j forD2
+
+saiD2:	addi $9, $0, 3
+
+forD3:  beq $9, $0, saiD3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forD3
+	
+saiD3:
+
+saiFuncDesenhad: 
+	jr $31
+	
+#====================================
+
+#====================================
+#Nome: funcDesenhaE
+#Utilidade: desenha a letra E a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenhaE:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA ES
+
+	addi $9, $0, 4	
+	
+forE1:  beq $9, $0, saiE1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forE1
+
+saiE1:	addi $25, $25, 496
+
+	addi $9, $0, 2
+
+forE2:	beq $9, $0, saiE2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	addi $9, $9, -1
+	
+	j forE2
+	
+saiE2:	addi $9, $0, 4
+	
+forE3:  beq $9, $0, saiE3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forE3
+
+saiE3:	addi $25, $25, 496
+
+	addi $9, $0, 2
+	
+forE4:	beq $9, $0, saiE4
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	addi $9, $9, -1
+	
+	j forE4
+	
+saiE4:	addi $9, $0, 4
+
+forE5:  beq $9, $0, saiE5
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forE5
+
+saiE5:
+	
+saiFuncDesenhaE:
+	jr $31
+	
+#====================================
+#Nome: funcDesenhaF
+#Utilidade: desenha a letra F a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenhaF:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA F
+
+	addi $9, $0, 4	
+	
+forF1:  beq $9, $0, saiF1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forF1
+
+saiF1:	addi $25, $25, 496
+
+	addi $9, $0, 2
+
+forF2:	beq $9, $0, saiF2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	addi $9, $9, -1
+	
+	j forF2
+	
+saiF2:	addi $9, $0, 4
+	
+forF3:  beq $9, $0, saiF3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forF3
+
+saiF3:	addi $25, $25, 496
+
+	addi $9, $0, 3
+	
+forF4:	beq $9, $0, saiF4
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	addi $9, $9, -1
+	
+	j forF4
+	
+saiF4:
+	
+saiFuncDesenhaF:
+	jr $31	
+	
+#====================================
+#Nome: funcDesenhaG
+#Utilidade: desenha a letra G a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenhaG:
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA G
+	
+	addi $9, $0, 4
+
+forG1:	beq $9, $0, saiG1
+
+	 sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	 sw $5, 65536($25)
+	 
+	 addi $25, $25, 4
+	 
+	 addi $9, $9, -1
+	 
+	 j forG1
+	 
+saiG1:	 addi $25, $25, 496
+
+	 addi $9, $0, 3
+	 
+forG2:	beq $9, $0, saiG2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 512
+	
+	addi $9, $9, -1
+	
+	j forG2
+	
+saiG2:	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+
+	
+	addi $25, $25, 8
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	addi $9, $0, 4
+	
+forG3:	beq $9, $0, saiG3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forG3
+	
+saiG3:
+	
+saiFuncDesenhaG:
+	jr $31
+	
+#====================================
+#Nome: funcDesenhaH
+#Utilidade: desenha a letra H a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenhaH:	
+	add $25, $4, $0	#ENDEREï¿½O EM QUE COMEï¿½ARï¿½ O DESENHO DA LETRA H
+	
+	addi $9, $0, 3
+	
+forH1:	beq $9, $0, saiH1
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	addi $9, $9, -1
+	
+	j forH1
+	
+saiH1:	addi $9, $0, 4
+	
+forH2:	beq $9, $0, saiH2
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 4
+	
+	addi $9, $9, -1
+	
+	j forH2
+
+saiH2:	addi $9, $0, 3
+
+	addi $25, $25, 496
+	
+forH3:	beq $9, $0, saiH3
+
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 12
+	
+	sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	sw $5, 65536($25)
+	
+	addi $25, $25, 500
+	
+	addi $9, $9, -1
+	
+	j forH3
+	
+saiH3:	
+
+saiFuncDesenhaH:
+	jr $31
+	
+#ESPAï¿½O DAS FUNï¿½ï¿½ES DE DESENHOS DE PEï¿½AS >:(
+#>=====================================================================
+
+#====================================
+#Nome: funcDesenhaTorre
+#Utilidade: desenha a torre a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno: 
+funcDesenhaTorre:	  
+
+addi $9, $0, 3	#REINICIALIZANDO O $9 PARA USO
+  
+t1:	  add $25, $4, $0	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE INICIAREMOS O DESENHO DA TORRE
+
+fortorre: beq $9, $0, sait1	#SE $9 = 0, ENTï¿½O SAI DESSE FOR
+
+	  sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	  
+	  addi $9, $9, -1	#DECREMENTANDO $9
+	  
+	  addi $25, $25, 8	#PULANDO 2 ESPAï¿½OS DE MEMï¿½RIA
+	  
+	  j fortorre
+	  
+sait1:	  addi $25, $25, 488	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE SERï¿½ CONTINUADA A PINTURA DA TORRE
+	  
+	  addi $9, $0, 5	#REINICIALIZANDO PARA O USO NO FOR
+	  
+	  addi $13, $0, 1	#USANDO PARA PULAR LINHA
+	   
+fortorre2: beq $9, $0, pulaLtorre #SE $9=0, ENTï¿½O DEVE-SE PULAR A LINHA PARA CONTINUAR A PINTURA DA TORRE
+	   
+	   sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	   
+	   addi $9, $9, -1	#DECREMENTANDO DO $9 QUE ï¿½ O Nï¿½MERO DE COLUNAS
+	   
+	   addi $25, $25, 4	#PULANDO PARA O PRï¿½XIMO ENDEREï¿½O
+	   
+	   j fortorre2
+	   
+pulaLtorre: beq $13, $0, sait2	#SE $13 = 0, ENTï¿½O A PINTURA TERMINOU
+	    
+	    addi $13, $13, -1   #DECREMENTA O Nï¿½MERO DE LINHAS ($13)
+	    
+	    addi $25, $25, 492	#PULA PARA A PRï¿½XIMA LINHA
+	    
+	    addi $9, $0, 5	#REINICIA A QUANTIDADE DE COLUNAS
+	    
+	    j fortorre2
+	    
+sait2:	    addi $25, $25, 496	#PULA PARA A PRï¿½XIMA LINHA
+	
+	    addi $9, $0, 3	#REINICIALIZANDO PARA O USO NO FOR
+	  
+	    addi $13, $0, 1	#USANDO PARA PULAR LINHA
+	    
+fortorre3: beq $9, $0, pulaLtorre2 #SE $9=0, ENTï¿½O DEVE-SE PULAR A LINHA PARA CONTINUAR A PINTURA DA TORRE
+	   
+	   sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	   
+	   addi $9, $9, -1	#DECREMENTANDO DO $9 QUE ï¿½ O Nï¿½MERO DE COLUNAS
+	   
+	   addi $25, $25, 4	#PULANDO PARA O PRï¿½XIMO ENDEREï¿½O
+	   
+	   j fortorre3
+	   
+pulaLtorre2: beq $13, $0, sait3	#SE $13 = 0, ENTï¿½O A PINTURA TERMINOU
+	    
+	    addi $13, $13, -1   #DECREMENTA O Nï¿½MERO DE LINHAS ($13)
+	    
+	    addi $25, $25, 500	#PULA PARA A PRï¿½XIMA LINHA
+	    
+	    addi $9, $0, 3	#REINICIA A QUANTIDADE DE COLUNAS
+	    
+	    j fortorre3
+
+sait3:	    addi $25, $25, 496	#PULA PARA A PRï¿½XIMA LINHA
+	
+	    addi $9, $0, 5
+	    
+fortorre4:  beq $9, $0, saitorre
+
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	    
+	    addi $9, $9, -1	#DECREMENTANDO A QUANTIDADE DE COLUNAS
+	    
+	    addi $25, $25, 4	#PULANDO PARA O PRï¿½XIMO ENDEREï¿½O
+	    
+	    j fortorre4
+	    
+saitorre:   jr $31
+
+#====================================
+
+#====================================
+#Nome: funcDesenhaCavalo
+#Utilidade: desenha um cavalo a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno: 
+funcDesenhaCavalo:	  
+
+addi $9, $0, 4	#REINICIALIZANDO O $9 PARA USO
+
+c1:	    add $25, $4, $0	#PULANDO PARA ONDE INICIAREMOS O DESENHO DO CAVALO
+
+forcavalo:  beq $9, $0, saic1
+
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	    
+	    addi $9, $9, -1	#DECREMENTANDO $9
+	    
+	    addi $25, $25, 4
+	    
+	    j forcavalo
+	    
+saic1:	    addi $25, $25, 500	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE SERï¿½ CONTINUADA A PINTURA DO CAVALO
+
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	    
+	    addi $25, $25, 8	#PULANDO PARA DEIXAR UM PONTO EM BRANCO (OLHO DO CAVALO)
+	    
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+
+	    addi $25, $25, 504	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE SERï¿½ CONTINUADA A PINTURA DO CAV
+	    
+	    addi $9, $0, 4	#REINICIANDO PARA UTILIZAR NA CONSTRUï¿½ï¿½O DO CAVALO
+	    
+forcavalo2: beq $9, $0, saic2
+
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	    
+	    addi $9, $9, -1	#DECREMENTANDO $9
+	    
+	    addi $25, $25, 4
+	    
+	    j forcavalo2
+
+saic2:      addi $25, $25, 496	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE SERï¿½ CONTINUADA A PINTURA DO CAVALO
+
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	    
+	    addi $25, $25, 4
+	    
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	    
+	    addi $25, $25, 8
+	    
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	    
+	    addi $25, $25, 512
+	    
+	    sw $5, 0($25)	#PINTANDO O PRETO NESSA POSIï¿½ï¿½O
+	    
+	    addi $25, $25, 496
+
+	    addi $9, $0, 5	#ADICIONANDO PARA O FOR	     
+	    
+forcavalo3:  beq $9 $0 saicavalo
+
+             sw $5, 0($25)
+
+	     addi $25 $25 4
+          
+             addi $9 $9 -1
+             j forcavalo3
+  
+
+saicavalo:   jr $31
+
+#====================================
+
+#====================================
+#Nome: funcDesenhaBispo
+#Utilidade: desenha um bispo a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno: 
+
+funcDesenhaBispo:
+
+		
+b1:	    add $25, $4, $0	#INDO PARA ONDE INICIAREMOS O DESENHO DA TORRE
+
+	    addi $25, $25, 8	#PULANDO 2 ENDEREï¿½OS DE MEMï¿½RIA PARA FICAR BONITINHO O DESENHO
+	    
+	    addi $9, $0, 3	#ADICIONANOD PARA O FOR DO BISPO
+
+forbispo1:  beq $9, $0, saib1	#SE $9 = 0 SAI DO FOR
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREï¿½O DE MEMï¿½RIA
+	    
+	    addi $9, $9, -1	#DECREMENTANDO $9
+	    
+	    j forbispo1
+	    
+saib1:	    addi $25, $25, 500  #PULANDO PARA A PRï¿½XIMA LINHA
+
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 8	#DEIXANDO UM PIXEL EM "BRANCO"
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 500	#PULANDO PARA A PRï¿½XIMA LINHA
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 16	#DEIXANDO 3 PIXEIS EM BRANCO
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 496  #PULANDO PARA A PRï¿½XIMA LINHA
+
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 4	#PULANDO ENDEREï¿½O DE MEMï¿½RIA
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 8	#DEIXANDO UM PIXEL EM "BRANCO"
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 4	#PULANDO ENDEREï¿½O DE MEMï¿½RIA
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 500	  #PULANDO PARA A PRï¿½XIMA LINHA
+	   
+	    addi $9, $0, 3	#ADICIONANOD PARA O FOR 2 DO BISPO
+	    
+	    addi $13, $0, 2	#ADICIONANDO CONTADOR DE LINHAS PARA O FOR 2 DO BISPO
+	    
+forb2:	    beq $13, $0, saibispo
+	    beq $9, $0, pulaLbispo2
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREï¿½O DE MEMï¿½RIA
+	    
+	    addi $9, $9, -1
+	    
+	    j forb2
+
+pulaLbispo2: addi $13, $13, -1	#DECREMENTA A QUANT DE LINHAS
+            
+            addi $25, $25, 496	#PULA PARA PROX LINHA
+            
+            addi $9, $0, 5	#REINICIA AS COLUNAS
+            
+            j forb2
+
+saibispo: jr $31
+#====================================
+
+#====================================
+#Nome: funcDesenhaRainha
+#Utilidade: desenha uma rainha a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+
+funcDesenhaRainha:
+
+     	    add $25, $4, $0	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE INICIAREMOS O DESENHO DA RAINHA
+
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 8
+	    
+	    sw $5 0($25)
+	    
+	    addi $25, $25, 8
+	    
+	    sw $5 0($25)
+	    
+	    addi $25, $25, 500	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
+	        
+	    addi $9, $0, 3	#ADICIONANDO PARA O FOR DA RAINHA
+	    
+forrainha:  beq $9, $0, sair1   #QUANDO $9 = 0 SAI DO FOR
+
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 4	#PULANDO PARA O PROX ENDEREï¿½O DE MEMï¿½RIA
+	    
+	    addi $9, $9 -1
+	    
+	    j forrainha
+	    
+sair1:	    addi $25, $25, 504	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
+
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25, 508	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
+	    
+	    addi $9, $0, 3	#ADICIONANDO PARA O FOR
+	    
+	    addi $13, $0, 2	#ADICIONANDO PARA CONTAGEM DE COLUNAS
+	    
+forrainha2: beq $13, $0, sair2	    #SE $13 = 0, SAI DO FOR
+	    beq $9, $0, pulaLrainha #SE $9 = 0, DEVE-SE PULAR A LINHA
+	    
+	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	    
+	    addi $25, $25 4	#PULANDO PARA O PROX ENDEREï¿½O DE MEMï¿½RIA
+	    
+	    addi $9, $9, -1
+	    
+	    j forrainha2
+	    
+pulaLrainha: addi $13, $13, -1	#DECREMENTA O $13
+
+	     addi $25, $25, 500	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE CONTINUAREMOS O DESENHO DA RAINHA
+	     
+	     addi $9, $9, 3	#REINICIANDO A QUANT COLUNAS
+	     
+	     j forrainha2
+	     
+sair2:	     addi $25, $25, -4	#VOLTANDO UM ENDEREï¿½O DE MEMï¿½RIA
+
+	     addi $9, $0, 5	#ADICIONANDO PARA O FOR
+
+forrainha3:  beq $9, $0, sairrainha	#$9 = 0 SAI DO FOR
+	     
+	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	     
+	     addi $25, $25, 4
+	     
+	     addi $9, $9, -1	
+	     
+	     j forrainha3
+	
+sairrainha:	jr $31
+
+#====================================
+
+#====================================
+#Nome: funcDesenhaRei
+#Utilidade: desenha um rei a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+
+funcDesenhaRei:
+	     add $25, $4, $0 #MOVENDO PARA A CASA DE POSIï¿½ï¿½O DO REI
+
+	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	     
+	     addi $25, $25, 508	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
+	     
+	     addi $9, $0, 3	#ADICIONANDO PARA O FOR
+	    
+forrei1:     beq $9, $0, saire1	#QUANDO $9 = 0, SAI DO FOR
+
+	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	     
+	     addi $25, $25, 4	#ADICIONANDO PARA O PROX ENDEREï¿½O DE MEMORIA
+	     
+	     addi $9, $9, -1
+	     
+	     j forrei1
+	     
+saire1:	     addi $25, $25, 504	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
+	     
+	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	     
+	     addi $25, $25, 508	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
+	     
+	     addi $9, $0, 3
+	     
+	     addi $13, $0, 2	#ADICIONANDO A QUANT DE LNIHA E COL DO FOR
+	     
+forrei2:     beq $13, $0, saire2 #SE $13 = 0 SAI DO FOR
+	     beq $9, $0, pulaLrei1 #SE $9 = 0, PULA PARA PROX LINHA
+	     
+	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	     
+	     addi $25, $25, 4
+	     
+	     addi $9, $9, -1
+	     
+	     j forrei2
+	    
+pulaLrei1:   addi $13, $13, -1	#REDUZINDO A QUANT DE LINHAS
+ 	     
+ 	     addi $25, $25, 500	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE CONTINUAREMOS O DESENHO DO REI
+ 	     
+ 	     addi $9, $0, 3
+ 	     
+ 	     j forrei2
+ 	     
+saire2:	     addi $25, $25, -4
+
+	     addi $9, $0, 5
+	     
+forrei3:     beq $9, $0, sairei
+	     
+	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
+	     
+	     addi $25, $25, 4	#PULANDO PARA O PROX ENDEREï¿½O DE MEMORIA
+	     
+	     addi $9, $9, -1	#DECREMENTANDO DO I DO FOR
+	     
+	     j forrei3
+
+sairei:	     jr $31
+#====================================
+
+#====================================
+#Nome: funcDesenhaPeï¿½o
+#Utilidade: desenha um peï¿½o a partir de um endereï¿½o de memï¿½ria previamente iniciado
+#Parï¿½metro: $4 (ENDEREï¿½O DE MEMï¿½RIA), $5(COR DE DESENHO)
+#Retorno:
+funcDesenhaPeao:
+	add $25 $0 $4 #COMEï¿½O DA FUNCDOPEAO
+           
+        addi $9 $0 3 #iNï¿½CIO DA CABEï¿½A DO PEï¿½O QUE TERï¿½ 4 UNIDADES GRï¿½FICAS
+        
+        addi $13, $0, 3	#ADICIONANDO PARA O PULALINHA
+ 
+forp1: 	beq $13 $0 saiforpeao1  
+	beq $9, $0, pulaLinhaPeao     
+        addi $9 $9 -1
+        
+        sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+        
+        addi $25 $25 4
+        j forp1
+        
+pulaLinhaPeao:
+	addi $9, $0, 3
+	
+	addi $25, $25, 500
+	
+	addi $13, $13, -1
+	
+	j forp1
+        
+saiforpeao1:
+	addi $25, $25, 4
+	
+	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	
+	addi $25, $25, 508
+	
+	addi $9, $0, 3
+	
+forp2:	beq $9, $0, saiforpeao2
+	
+	addi $9, $9, -1
+	
+	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	
+	addi $25, $25, 4
+	
+	j forp2
+	
+saiforpeao2:
+	addi $25, $25, 496
+	
+	addi $9, $0, 5
+	
+forp3:	beq $9, $0, saipeaofunc
+	
+	addi $9, $9, -1
+	
+	sw $5 0($25)   # PINTA COM A COR DE ENTRADA O PIXEL
+	
+	addi $25, $25, 4
+	
+	j forp3
+
+saipeaofunc: 
+	jr $31
+#====================================
+
+sleep: addi $15, $0, 30000
+forsleep: beq $15, $0, fimsleep
+          nop
+          nop
+          nop
+          nop
+          addi $15, $15, -1
+          j forsleep  
+fimsleep: jr $31
+
+Sleep2: add $15 $0 $15
+  forsleep2: bne $15 $0 fimsleep2
+             nop
+             nop
+             nop
+             nop
+            j forsleep2
+  fimsleep2: jr $31                 
+#<=====================================================================
