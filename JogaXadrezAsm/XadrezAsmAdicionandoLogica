@@ -1,3 +1,21 @@
+.data
+#0x10010010
+.word 2, 3, 4, 5, 6, 4, 3, 2
+#0x10010010 + 32
+.word 1, 1, 1, 1, 1, 1, 1, 1
+#0x10010010 + 64
+.word 0, 0, 0, 0, 0, 0, 0, 0
+#0x10010010 + 96
+.word 0, 0, 0, 0, 0, 0, 0, 0
+#0x10010010 + 128
+.word 0, 0, 0, 0, 0, 0, 0, 0
+#0x10010010 + 160
+.word 0, 0, 0, 0, 0, 0, 0, 0
+#0x10010010 + 192
+.word 1, 1, 1, 1, 1, 1, 1, 1
+#0x10010010 + 224
+.word 2, 3, 4, 5, 6, 4, 3, 2
+
 .text
 #NOTA DE VINICIUS: NA HORA DE DESENHAR AS PEï¿½AS, SEMPRE SOME O ENDEREï¿½O DA ï¿½LTIMA +64 PARA O DESENHO DA PRï¿½XIMA PEï¿½A
 #EX.: O DESENHO DA TORRE COMEï¿½OU NO ENDEREï¿½O 1552, ENTï¿½O O DO CAVALO COMEï¿½ARï¿½ NO 1616, O DO BISPO NO 1680 E ASSIM EM DIANTE
@@ -558,17 +576,6 @@ saiForDesenhaPeao2:
 	  #PARÂMETRO DE FUNCOES: $4 PARA ENDERECO E $5 PARA COR;
 	  #PARA OS IFS DENTRO DO JOGO: $12
 	  
-	  addi $6, $0, 1	#CONTROLE DO DESENHO DO PEÃO
-	  
-	  addi $7, $0, 2	#CONTROLE DO DESENHO DA TORRE
-	  
-	  addi $8, $0, 3	#CONTROLE DO DESENHO DO CAVALO
-	  
-	  addi $18, $0, 4	#CONTROLE DO DESENHO DO BISPO
-	  
-	  addi $20, $0, 5	#CONTROLE DO DESENHO DA RAINHA
-	  
-	  addi $21, $0, 6	#CONTROLE DO DESENHO DO REI
 	  
 	  addi $15, $0, 0
 	  
@@ -648,8 +655,11 @@ INICIO:
 	  j digIA
 	  
 	  digIA1:
-	  add $22, $0, $7	#TORRE SENDO POSICIONADA NESSA CASA
-	  
+	  lui $18, 0x1001
+	  addi $18, $18, 224
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  	  
 	  lw $14, 51776($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
 	  addi $4, $25, 51776	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
@@ -660,7 +670,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIA2:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
-	  add $22, $0, $6	#PEÃO SENDO POSICIONADA NESSA CASA
+	  lui $18, 0x1001
+	  addi $18, $18, 192
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 45632($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -672,6 +685,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIA3:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 160
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 39488($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -683,6 +700,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIA4:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 128
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 33344($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -694,6 +715,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIA5:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 96
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 27200($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -705,6 +730,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIA6:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 64
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 21056($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -716,7 +745,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIA7:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
-	  add $22, $0, $6	#PEAO SENDO POSICIONADA NESSA CASA
+	  lui $18, 0x1002
+	  addi $18, $18, 32
+	  
+	 	
 	  
 	  lw $14, 14912($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -728,7 +760,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIA8:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
-	  add $22, $0, $7	#TORRE SENDO POSICIONADA NESSA CASA
+	  lui $18, 0x1001
+	  addi $18, $18, 0
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 8768($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -780,7 +815,10 @@ INICIO:
 	  j digIB
 	  
 	  digIB1:
-	  add $22, $0, $8	#CAVALO COMEÇANDO NESSA CASA
+	  lui $18, 0x1001
+	  addi $18, $18, 228
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 51824($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -792,6 +830,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digIB2:		#SE O USUARIO DIGITOU A POSICAO B2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 196
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 45680($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
 	  addi $4, $25, 45680   #PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
@@ -802,6 +845,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIB3:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 164
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 39536($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -813,6 +860,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIB4:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 132
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 33392($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -824,6 +875,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIB5:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 100
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 27248($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -835,6 +890,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIB6:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 68
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 21104($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -846,6 +905,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIB7:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 36
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 14960($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -857,6 +920,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIB8:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 4
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 8816($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -909,6 +976,11 @@ INICIO:
 	  j digIC
 	  	  	
 	  digIC1:
+	  lui $18, 0x1001
+	  addi $18, $18, 232
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 51872($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
 	  addi $4, $25, 51872	#PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
@@ -919,6 +991,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digIC2:		#SE O USUARIO DIGITOU A POSICAO C2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 200
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 45728($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
 	  addi $4, $25, 45728   #PARAMETRO QUE DITA O INÍCIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
@@ -929,6 +1006,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIC3:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 168
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 39584($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -940,6 +1021,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIC4:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	  lui $18, 0x1001
+	  addi $18, $18, 136
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 33440($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -951,6 +1036,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIC5:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 104
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 27296($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -962,6 +1051,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIC6:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 72
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 21152($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -973,6 +1066,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIC7:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 40
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 15008($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 
@@ -984,6 +1081,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIC8:		#SE O USUARIO DIGITOU A POSICAO A2, VEM PARA CA
+	   lui $18, 0x1001
+	  addi $18, $18, 8
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 8864($25)	#CARREGANDO O ENDERECO DE MEMORIA PARA VERIFICACAO
 	  
@@ -1036,6 +1137,11 @@ INICIO:
 	  j digID
 	  	  	
 	  digID1:
+	  lui $18, 0x1001
+	  addi $18, $18, 236
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 51920($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
 	  
 	  addi $4, $25, 51920	#PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
@@ -1046,6 +1152,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digID2:		#SE O USUARIO DIGITOU A POSIDAO D2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 204
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 45776($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
 	  
 	  addi $4, $25, 45776   #PARAMETRO QUE DITA O INÍDIO DO QUADRADO PARA PINTURA DELE PARA PEÇA SUMIR
@@ -1056,6 +1167,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digID3:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 172
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 39632($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
 	  
@@ -1067,6 +1182,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digID4:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 140
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 33488($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
 	  
@@ -1078,6 +1197,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digID5:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 108
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 27344($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
 	  
@@ -1089,6 +1212,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digID6:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 76
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 21200($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
 	  
@@ -1100,6 +1227,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digID7:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 44
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 15056($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
 
@@ -1111,6 +1242,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digID8:		#SE O USUARIO DIGITOU A POSIDAO A2, VEM PARA DA
+	  lui $18, 0x1001
+	  addi $18, $18, 12
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 8912($25)	#DARREGANDO O ENDEREDO DE MEMORIA PARA VERIFIDADAO
 	  
@@ -1162,6 +1297,11 @@ INICIO:
 	  j digIE
 	  	  	
 	  digIE1:
+	  lui $18, 0x1001
+	  addi $18, $18, 240
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 51968($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
 	  
 	  addi $4, $25, 51968	#PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
@@ -1172,6 +1312,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digIE2:		#SE O USUARIO EIGITOU A POSIEAO E2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 208
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 45824($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
 	  
 	  addi $4, $25, 45824   #PARAMETRO QUE EITA O INÍEIO EO QUAERAEO PARA PINTURA EELE PARA PEÇA SUMIR
@@ -1182,6 +1327,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIE3:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 176
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 39682($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
 	  
@@ -1193,6 +1342,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIE4:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 144
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 33536($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
 	  
@@ -1204,6 +1357,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIE5:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 112
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 27392($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
 	  
@@ -1215,6 +1372,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIE6:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 80
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 21248($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
 	  
@@ -1226,6 +1387,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIE7:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 48
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 15104($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
 
@@ -1237,6 +1402,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIE8:		#SE O USUARIO EIGITOU A POSIEAO A2, VEM PARA EA
+	  lui $18, 0x1001
+	  addi $18, $18, 16
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 8960($25)	#EARREGANEO O ENEEREEO EE MEMORIA PARA VERIFIEAEAO
 	  
@@ -1288,6 +1457,11 @@ INICIO:
 	  j digIF
 	  	  	
 	  digIF1:
+	  lui $18, 0x1001
+	  addi $18, $18, 244
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 52016($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
 	  
 	  addi $4, $25, 52016	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
@@ -1298,6 +1472,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digIF2:		#SF O USUARIO FIGITOU A POSIFAO F2, VFM PARA FA
+	  lui $18, 0x1001
+	  addi $18, $18, 212
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 45872($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
 	  
 	  addi $4, $25, 45872   #PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
@@ -1308,6 +1487,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIF3:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+	  lui $18, 0x1001
+	  addi $18, $18, 180
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 39730($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
 	  
@@ -1318,7 +1501,11 @@ INICIO:
 	  
 	  j casaVazia
 	  
-	  digIF4:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+	  digIF4:
+	  lui $18, 0x1001
+	  addi $18, $18, 148
+	  lw $6 0($18)
+	  sw $0 0($18)		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
 	  
 	  lw $14, 33584($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
 	  
@@ -1330,6 +1517,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIF5:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+	  lui $18, 0x1001
+	  addi $18, $18, 116
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 27440($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
 	  
@@ -1341,6 +1532,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIF6:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
+	  lui $18, 0x1001
+	  addi $18, $18, 84
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 21296($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
 	  
@@ -1352,7 +1547,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digIF7:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
-	  
+          lui $18, 0x1001
+	  addi $18, $18, 52
+	  lw $6 0($18)
+	  sw $0 0($18)
+	    	  
 	  lw $14, 15152($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
 
 	  addi $4, $25, 15152	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
@@ -1363,7 +1562,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digIF8:		#SF O USUARIO FIGITOU A POSIFAO A2, VFM PARA FA
-	  
+          lui $18, 0x1001
+	  addi $18, $18, 20
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  	  
 	  lw $14, 9008($25)	#FARRFGANFO O FNFFRFFO FF MFMORIA PARA VFRIFIFAFAO
 	  
 	  addi $4, $25, 9008	#PARAMFTRO QUF FITA O INÍFIO FO QUAFRAFO PARA PINTURA FFLF PARA PFÇA SUMIR
@@ -1414,6 +1617,11 @@ INICIO:
 	  j digIG
 	  	  	
 	  digIG1:
+	  lui $18, 0x1001
+	  addi $18, $18, 248
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 52064($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
 	  
 	  addi $4, $25, 52064	#PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
@@ -1424,6 +1632,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digIG2:		#SG O USUARIO GIGITOU A POSIGAO G2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 216
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 45920($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
 	  
 	  addi $4, $25, 45920   #PARAMGTRO QUG GITA O INÍGIO GO QUAGRAGO PARA PINTURA GGLG PARA PGÇA SUMIR
@@ -1434,6 +1647,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIG3:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 184
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 39778($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
 	  
@@ -1445,6 +1662,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIG4:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 152
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 33632($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
 	  
@@ -1456,6 +1677,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIG5:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 120
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 27488($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
 	  
@@ -1467,6 +1692,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIG6:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 88
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 21344($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
 	  
@@ -1478,6 +1707,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIG7:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 56
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 15200($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
 
@@ -1489,6 +1722,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIG8:		#SG O USUARIO GIGITOU A POSIGAO A2, VGM PARA GA
+	  lui $18, 0x1001
+	  addi $18, $18, 24
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 9056($25)	#GARRGGANGO O GNGGRGGO GG MGMORIA PARA VGRIGIGAGAO
 	  
@@ -1540,6 +1777,11 @@ INICIO:
 	  j digIH
 	  	  	
 	  digIH1:
+	  lui $18, 0x1001
+	  addi $18, $18, 252
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 52112($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
 	  
 	  addi $4, $25, 52112	#PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
@@ -1550,6 +1792,11 @@ INICIO:
 	  j casaVazia
 	  
 	  digIH2:		#SH O USUARIO HIHITOU A POSIHAO H2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 220
+	  lw $6 0($18)
+	  sw $0 0($18)
+	  
 	  lw $14, 45968($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
 	  
 	  addi $4, $25, 45968   #PARAMHTRO QUH HITA O INÍHIO HO QUAHRAHO PARA PINTURA HHLH PARA PHÇA SUMIR
@@ -1560,6 +1807,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIH3:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 188
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 39826($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
 	  
@@ -1571,6 +1822,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIH4:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 156
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 33680($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
 	  
@@ -1582,6 +1837,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIH5:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 124
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 27536($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
 	  
@@ -1593,6 +1852,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIH6:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 92
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 21392($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
 	  
@@ -1604,6 +1867,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIH7:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 60
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 15248($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
 
@@ -1615,6 +1882,10 @@ INICIO:
 	  j casaVazia
 	  
 	  digIH8:		#SH O USUARIO HIHITOU A POSIHAO A2, VHM PARA HA
+	  lui $18, 0x1001
+	  addi $18, $18, 28
+	  lw $6 0($18)
+	  sw $0 0($18)
 	  
 	  lw $14, 9104($25)	#HARRHHANHO O HNHHRHHO HH MHMORIA PARA VHRIHIHAHAO
 	  
@@ -1704,63 +1975,434 @@ DESTINO:
 	  
 	  addi $4, $25, 52816	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
 	  
-	  jal funcDesenhaPeao
+	  lui $18, 0x1001
+	  addi $18, $18, 228
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
 	  
 	  digDA2:
 	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
 	  
-	  addi $4, $25, 52864	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  addi $4, $25, 46672	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
 	  
-	  jal funcDesenhaPeao
+	  lui $18, 0x1001
+	  addi $18, $18, 196
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
 	  
 	  digDA3:
 	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
 	  
-	  addi $4, $25, 52908	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  addi $4, $25, 40528
 	  
-	  jal funcDesenhaPeao
+	  lui $18, 0x1001
+	  addi $18, $18, 164
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
 	  
 	  digDA4:
 	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
 	  
-	  addi $4, $25, 34388	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  addi $4, $25, 34384	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
 	  
-	  jal funcDesenhaPeao
+	  lui $18, 0x1001
+	  addi $18, $18, 132
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
 	  
 	  j forPrincipal
 	  
-	  digDA5:
 	  
+	  digDA5:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 28240	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 100
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	   
+	   j forPrincipal
+	   
 	  digDA6:
+	   lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 22096	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 68
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
 	  
 	  digDA7:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 15952	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 32
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
 	  
 	  digDA8:
-
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
 	  
-	  digDB:
-	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA
+	  addi $4, $25, 9808	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 0
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
 
+#===================================	  
+	  digDB:
 	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB1
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB2
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB3	  	    
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
 	  beq $15, $12, digDB4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 4
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB5
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB6
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB7
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB8
 	  
 	  jal sleep
-	  
+	   
 	  j digDB
+	  
+	  digDB1:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 52864	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 228
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDB2:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 46720	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 196
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDB3:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 40576	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18,164
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
 	  
 	  digDB4:
 	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
 	  
-	  addi $4, $25, 34436	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  addi $4, $25, 34432	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
 	  
-	  jal funcDesenhaPeao
+	   lui $18, 0x1001
+	  addi $18, $18, 132
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
 	  
 	  j forPrincipal
 	  
+	  
+	  digDB5:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 28288	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 100
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	   
+	   j forPrincipal
+	   
+	  digDB6:
+	   lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 22144	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	   lui $18, 0x1001
+	  addi $18, $18, 68
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDB7:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 16000	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 36
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  digDB8:
+	  lui $25, 0x1001	#REINICIANDO O ENDEREï¿½O DE MEMï¿½RIA INICIAL
+	  
+	  addi $4, $25, 9852	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 4
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  	  
+	  
+	  j forPrincipal
 #==========================================================================================================
 
 	  digDC:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB1
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB2
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB3	  	    
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+	  beq $15, $12, digDB4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 4
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB5
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB6
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB7
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDB8
 	  
+	  jal sleep
+	   
+	  j digDC
 	  
 #==========================================================================================================
 
@@ -1783,7 +2425,31 @@ DESTINO:
 	  digDH:
 	  
 #==========================================================================================================	  
-	  	  	  
+#PEÇAS:
+peao:
+jal funcDesenhaPeao
+j forPrincipal
+
+torre:
+jal funcDesenhaTorre
+j forPrincipal
+
+cavalo:
+jal funcDesenhaCavalo
+j forPrincipal
+
+bispo:
+jal funcDesenhaBispo
+j forPrincipal
+
+rainha:
+jal funcDesenhaRainha
+j forPrincipal
+
+rei:
+jal funcDesenhaRei
+j forPrincipal
+#==========================================================================================================	  
 naodig:   jal sleep
 	
 	  j forPrincipal
@@ -3257,7 +3923,7 @@ saibispo: jr $31
 
 funcDesenhaRainha:
 
-rainha:     add $25, $4, $0	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE INICIAREMOS O DESENHO DA RAINHA
+     	    add $25, $4, $0	#PULANDO PARA A PRï¿½XIMA LINHA, ONDE INICIAREMOS O DESENHO DA RAINHA
 
 	    sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
 	    
@@ -3337,7 +4003,7 @@ sairrainha:	jr $31
 #Retorno:
 
 funcDesenhaRei:
-rei:	     add $25, $4, $0 #MOVENDO PARA A CASA DE POSIï¿½ï¿½O DO REI
+	     add $25, $4, $0 #MOVENDO PARA A CASA DE POSIï¿½ï¿½O DO REI
 
 	     sw $5 0($25) 	#PINTANDO O PIXEL DE PRETO NA POSIï¿½ï¿½O ATUAL
 	     
