@@ -2289,7 +2289,7 @@ DESTINO:
 	  
 	  addi $4, $25, 28288	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
 	  
-	   lui $18, 0x1001
+	  lui $18, 0x1001
 	  addi $18, $18, 104
 	  sw $6 0($18)
 	  
@@ -2388,17 +2388,17 @@ DESTINO:
 	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
 	  beq $15, $12, digDC2
 	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
-	  #beq $15, $12, digDC3	  	    
+	  beq $15, $12, digDC3	  	    
 	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
-	  #beq $15, $12, digDC4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 4
+	  beq $15, $12, digDC4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 4
 	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
-	  #beq $15, $12, digDC5
+	  beq $15, $12, digDC5
 	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
-	  #beq $15, $12, digDC6
+	  beq $15, $12, digDC6
 	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
-	  #beq $15, $12, digDC7
+	  beq $15, $12, digDC7
 	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
-	  #beq $15, $12, digDC8
+	  beq $15, $12, digDC8
 	  
 	  jal sleep
 	   
@@ -2410,7 +2410,7 @@ DESTINO:
 	  addi $4, $25, 52912	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
 	  
 	  lui $18, 0x1001
-	  addi $18, $18, 228
+	  addi $18, $18, 236
 	  sw $6 0($18)
 	  
 	  addi $7, $0, 1
@@ -2431,10 +2431,154 @@ DESTINO:
 	  digDC2:
 	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
 	  
-	  addi $4, $25, 46764	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  addi $4, $25, 46768	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
 	  
 	  lui $18, 0x1001
-	  addi $18, $18, 196
+	  addi $18, $18, 204
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDC3:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 40616	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 172
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDC4:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 34472	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 140
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDC5:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 28328	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 108
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDC6:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 22184	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 76
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDC7:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 16040	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 44
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDC8:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 9896	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 12
 	  sw $6 0($18)
 	  
 	  addi $7, $0, 1
@@ -2455,6 +2599,219 @@ DESTINO:
 #==========================================================================================================
 
 	  digDD:
+	  lw $15, 4($24)
+	  addi $12, $0, '1'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDD1
+	  addi $12, $0, '2'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDD2
+	  addi $12, $0, '3'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDD3	  	    
+	  addi $12, $0, '4'	#ADICIONANDO PARA VERIFICACAO FINAL DA PECA	  
+	  beq $15, $12, digDD4	#VERIFICANDO SE O USUARIO DIGITOU O NUM 4
+	  addi $12, $0, '5'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDD5
+	  addi $12, $0, '6'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDD6
+	  addi $12, $0, '7'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDD7
+	  addi $12, $0, '8'	#ADICIONANDO PARA VERIFICAR DESTINO DA PEÇA	
+	  beq $15, $12, digDD8
+	  
+	  jal sleep
+	   
+	  j digDC
+	  
+	  digDD1:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 52960	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 240
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDD2:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 46816	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 208
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDD3:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 40672	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 176
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDD4:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 34528	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 144
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDD5:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 28384	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 112
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDD6:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 22240	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 80
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDD7:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 16096	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 48
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
+	  
+	  digDD8:
+	  lui $25, 0x1001	#REINICIANDO O ENDERECO DE MEMORIA
+	  
+	  addi $4, $25, 9952	#ADICIONANDO PARA ENVIAR PARA A FUNC DESENHA PEÃO
+	  
+	  lui $18, 0x1001
+	  addi $18, $18, 16
+	  sw $6 0($18)
+	  
+	  addi $7, $0, 1
+	  beq $6, $7, peao
+	  addi $7, $0, 2
+	  beq $6, $7, torre
+	  addi $7, $0, 3
+	  beq $6, $7, cavalo
+	  addi $7, $0, 4
+	  beq $6, $7, torre
+	  addi $7, $0, 5
+	  beq $6, $7, rainha
+	  addi $7, $0, 6
+	  beq $6, $7, rei
+	  
+	  j forPrincipal
 	  
 #==========================================================================================================
 
